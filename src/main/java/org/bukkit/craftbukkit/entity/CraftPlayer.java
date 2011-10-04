@@ -480,7 +480,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     }
 
     public void setExperience(int exp) {
-        getHandle().d(exp - getExperience());
+        getHandle().resetExperience();
+        getHandle().d(exp);
+    }
+
+    public void addExperience(int exp) {
+        getHandle().d(exp);
     }
 
     public int getLevel() {
@@ -488,6 +493,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     }
 
     public void setLevel(int level) {
+        getHandle().expOldLevel = getHandle().expLevel;
         getHandle().expLevel = level;
     }
 
