@@ -1107,15 +1107,6 @@ public abstract class EntityHuman extends EntityLiving {
         // Craftbukkit end
     }
 
-    // Craftbukkit - Added simple reset function
-    public void resetExperience() {
-        this.expOldLevel = this.expLevel;
-        this.exp = 0;
-        this.expTotal = 0;
-        this.expLevel = 0;
-    }
-    // Cratbukkit end
-
     public int U() {
         return (this.expLevel + 1) * 10;
     }
