@@ -260,6 +260,7 @@ public class ServerConfigurationManager {
             entityplayer.fireTicks = 0;
             entityplayer.fallDistance = 0;
             entityplayer.foodData = new FoodMetaData();
+            entityplayer.expOldLevel = entityplayer.expLevel; // Craftbukkit
             entityplayer.expTotal = 0;
             entityplayer.exp = 0;
             entityplayer.expLevel = 0;

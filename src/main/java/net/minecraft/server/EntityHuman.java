@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 // CraftBukkit end
 
@@ -56,6 +57,7 @@ public abstract class EntityHuman extends EntityLiving {
     public PlayerAbilities abilities = new PlayerAbilities();
     public int exp;
     public int expLevel;
+    public int expOldLevel; // CraftBukkit
     public int expTotal;
     private ItemStack d;
     private int e;
@@ -467,6 +469,7 @@ public abstract class EntityHuman extends EntityLiving {
         this.sleepTicks = nbttagcompound.d("SleepTimer");
         this.exp = nbttagcompound.e("Xp");
         this.expLevel = nbttagcompound.e("XpLevel");
+        this.expOldLevel = this.expLevel; // Craftbukkit
         this.expTotal = nbttagcompound.e("XpTotal");
         if (this.sleeping) {
             this.E = new ChunkCoordinates(MathHelper.floor(this.locX), MathHelper.floor(this.locY), MathHelper.floor(this.locZ));
@@ -1095,6 +1098,13 @@ public abstract class EntityHuman extends EntityLiving {
             this.exp -= this.U();
             this.y();
         }
+
+        // Craftbukkit start
+        if(this.expOldLevel != this.expLevel) {
+            this.world.getServer().getPluginManager().callEvent(new PlayerLevelChangeEvent(this.world.getServer().getPlayer((EntityPlayer)this), this.expOldLevel, this.expLevel));
+            this.expOldLevel = this.expLevel;
+        }
+        // Craftbukkit end
     }
 
     public int U() {
