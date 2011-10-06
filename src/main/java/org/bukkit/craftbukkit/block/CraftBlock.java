@@ -267,7 +267,13 @@ public class CraftBlock implements Block {
 
     @Override
     public boolean equals(Object o) {
-        return this == o;
+        if(!(o instanceof CraftBlock)) return false;
+        CraftBlock other = (CraftBlock)o;
+        
+        if(!this.chunk.equals(other.chunk) || this.x != other.x || this.y != other.y || this.z != other.z)
+            return false;
+            
+        return true;
     }
 
     public boolean isBlockFacePowered(BlockFace face) {
