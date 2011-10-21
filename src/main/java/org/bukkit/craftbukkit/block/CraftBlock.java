@@ -314,6 +314,9 @@ public class CraftBlock implements Block {
 
     public PistonMoveReaction getPistonMoveReaction() {
         return PistonMoveReaction.getById(net.minecraft.server.Block.byId[this.getTypeId()].material.l());
-
+    }
+    
+    public int hashCode() {
+        return this.x*this.y*this.z*this.getWorld().hashCode();
     }
 }
