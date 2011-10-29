@@ -618,7 +618,7 @@ public abstract class EntityLiving extends Entity {
                 k += this.random.nextInt(i + 1);
             }
             
-            if (i > 0) {
+            if (k > 0) {
                 loot.add(new org.bukkit.inventory.ItemStack(j, k));
             }
 
