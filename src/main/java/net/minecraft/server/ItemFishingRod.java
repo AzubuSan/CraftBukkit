@@ -6,8 +6,8 @@ public class ItemFishingRod extends Item {
 
     public ItemFishingRod(int i) {
         super(i);
-        this.d(64);
-        this.c(1);
+        this.f(64);
+        this.e(1);
     }
 
     public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
@@ -15,7 +15,7 @@ public class ItemFishingRod extends Item {
             int i = entityhuman.hookedFish.i();
 
             itemstack.damage(i, entityhuman);
-            entityhuman.v();
+            entityhuman.s_();
         } else {
             // CraftBukkit start
             PlayerFishEvent playerFishEvent = new PlayerFishEvent((org.bukkit.entity.Player) entityhuman.getBukkitEntity(), null,PlayerFishEvent.State.FISHING);
@@ -30,7 +30,7 @@ public class ItemFishingRod extends Item {
                 world.addEntity(new EntityFishingHook(world, entityhuman));
             }
 
-            entityhuman.v();
+            entityhuman.s_();
         }
 
         return itemstack;

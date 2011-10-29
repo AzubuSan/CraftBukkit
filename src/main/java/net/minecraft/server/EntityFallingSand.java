@@ -14,8 +14,8 @@ public class EntityFallingSand extends Entity {
     public EntityFallingSand(World world, double d0, double d1, double d2, int i, int data) {
         super(world);
         this.a = i;
-        this.data = data;
-        this.aY = true;
+        this.bb = true;
+        this.data = data; // CraftBukkit
         this.b(0.98F, 0.98F);
         this.height = this.width / 2.0F;
         this.setPosition(d0, d1, d2);
@@ -27,17 +27,17 @@ public class EntityFallingSand extends Entity {
         this.lastZ = d2;
     }
 
-    protected boolean e_() {
+    protected boolean g_() {
         return false;
     }
 
     protected void b() {}
 
-    public boolean r_() {
+    public boolean d_() {
         return !this.dead;
     }
 
-    public void s_() {
+    public void x_() {
         if (this.a == 0) {
             this.die();
         } else {
@@ -64,7 +64,7 @@ public class EntityFallingSand extends Entity {
                 this.motY *= -0.5D;
                 this.die();
                 // CraftBukkit -- setTypeId => setTypeIdAndData
-                if ((!this.world.a(this.a, i, j, k, true, 1) || BlockSand.d_(this.world, i, j - 1, k) || !this.world.setTypeIdAndData(i, j, k, this.a, this.data)) && !this.world.isStatic) {
+                if ((!this.world.a(this.a, i, j, k, true, 1) || BlockSand.g(this.world, i, j - 1, k) || !this.world.setTypeIdAndData(i, j, k, this.a, this.data)) && !this.world.isStatic) {
                     this.b(this.a, 1);
                 }
             } else if (this.b > 100 && !this.world.isStatic) {
@@ -80,7 +80,7 @@ public class EntityFallingSand extends Entity {
     }
 
     protected void a(NBTTagCompound nbttagcompound) {
-        this.a = nbttagcompound.c("Tile") & 255;
-        this.data = nbttagcompound.c("Data") & 15; // CraftBukkit
+        this.a = nbttagcompound.d("Tile") & 255;
+        this.data = nbttagcompound.d("Data") & 15; // CraftBukkit
     }
 }

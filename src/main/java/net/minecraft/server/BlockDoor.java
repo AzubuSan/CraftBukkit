@@ -46,8 +46,12 @@ public class BlockDoor extends Block {
         return false;
     }
 
-    public boolean b() {
+    public boolean c() {
         return false;
+    }
+
+    public int b() {
+        return 7;
     }
 
     public AxisAlignedBB e(World world, int i, int j, int k) {
@@ -160,7 +164,7 @@ public class BlockDoor extends Block {
 
             if (flag) {
                 if (!world.isStatic) {
-                    this.g(world, i, j, k, i1);
+                    this.b(world, i, j, k, i1, 0);
                 }
             } else if (l > 0 && Block.byId[l].isPowerSource()) {
                 // CraftBukkit start
@@ -184,7 +188,7 @@ public class BlockDoor extends Block {
         }
     }
 
-    public int a(int i, Random random) {
+    public int a(int i, Random random, int j) {
         return (i & 8) != 0 ? 0 : (this.material == Material.ORE ? Item.IRON_DOOR.id : Item.WOOD_DOOR.id);
     }
 
@@ -198,8 +202,7 @@ public class BlockDoor extends Block {
     }
 
     public boolean canPlace(World world, int i, int j, int k) {
-        world.getClass();
-        return j >= 128 - 1 ? false : world.e(i, j - 1, k) && super.canPlace(world, i, j, k) && super.canPlace(world, i, j + 1, k);
+        return j >= world.height - 1 ? false : world.e(i, j - 1, k) && super.canPlace(world, i, j, k) && super.canPlace(world, i, j + 1, k);
     }
 
     public static boolean e(int i) {

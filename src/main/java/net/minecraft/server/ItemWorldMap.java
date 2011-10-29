@@ -9,7 +9,7 @@ public class ItemWorldMap extends ItemWorldMapBase {
 
     protected ItemWorldMap(int i) {
         super(i);
-        this.c(1);
+        this.e(1);
     }
 
     public WorldMap a(ItemStack itemstack, World world) {
@@ -21,8 +21,8 @@ public class ItemWorldMap extends ItemWorldMapBase {
             String s = "map_" + itemstack.getData();
 
             worldmap = new WorldMap(s);
-            worldmap.b = world.p().c();
-            worldmap.c = world.p().e();
+            worldmap.b = world.r().c();
+            worldmap.c = world.r().e();
             worldmap.e = 3;
             worldmap.map = (byte) world.worldProvider.dimension;
             worldmap.a();

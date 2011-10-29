@@ -17,11 +17,11 @@ public class BlockDispenser extends BlockContainer {
         this.textureId = 45;
     }
 
-    public int c() {
+    public int d() {
         return 4;
     }
 
-    public int a(int i, Random random) {
+    public int a(int i, Random random, int j) {
         return Block.DISPENSER.id;
     }
 
@@ -161,6 +161,12 @@ public class BlockDispenser extends BlockContainer {
                     entitysnowball.a((double) b0, 0.10000000149011612D, (double) b1, 1.1F, 6.0F);
                     world.addEntity(entitysnowball);
                     world.e(1002, i, j, k, 0);
+                } else if (itemstack.id == Item.POTION.id && ItemPotion.c(itemstack.getData())) {
+                    EntityPotion entitypotion = new EntityPotion(world, d0, d1, d2, itemstack.getData());
+
+                    entitypotion.a((double) b0, 0.10000000149011612D, (double) b1, 1.375F, 3.0F);
+                    world.addEntity(entitypotion);
+                    world.e(1002, i, j, k, 0);
                 } else {
                     EntityItem entityitem = new EntityItem(world, d0, d1 - 0.3D, d2, itemstack);
                     // CraftBukkit start
@@ -183,13 +189,13 @@ public class BlockDispenser extends BlockContainer {
             boolean flag = world.isBlockIndirectlyPowered(i, j, k) || world.isBlockIndirectlyPowered(i, j + 1, k);
 
             if (flag) {
-                world.c(i, j, k, this.id, this.c());
+                world.c(i, j, k, this.id, this.d());
             }
         }
     }
 
     public void a(World world, int i, int j, int k, Random random) {
-        if (world.isBlockIndirectlyPowered(i, j, k) || world.isBlockIndirectlyPowered(i, j + 1, k)) {
+        if (!world.isStatic && (world.isBlockIndirectlyPowered(i, j, k) || world.isBlockIndirectlyPowered(i, j + 1, k))) {
             this.dispense(world, i, j, k, random);
         }
     }

@@ -16,7 +16,7 @@ public class BlockSapling extends BlockFlower {
     public void a(World world, int i, int j, int k, Random random) {
         if (!world.isStatic) {
             super.a(world, i, j, k, random);
-            if (world.getLightLevel(i, j + 1, k) >= 9 && random.nextInt(30) == 0) {
+            if (world.getLightLevel(i, j + 1, k) >= 9 && random.nextInt(7) == 0) {
                 int l = world.getData(i, j, k);
 
                 if ((l & 8) == 0) {

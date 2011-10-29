@@ -13,7 +13,12 @@ public class EntityPig extends EntityAnimal {
         this.b(0.9F, 0.9F);
     }
 
+    public int getMaxHealth() {
+        return 10;
+    }
+
     protected void b() {
+        super.b();
         this.datawatcher.a(16, Byte.valueOf((byte) 0));
     }
 
@@ -24,18 +29,18 @@ public class EntityPig extends EntityAnimal {
 
     public void a(NBTTagCompound nbttagcompound) {
         super.a(nbttagcompound);
-        this.setSaddle(nbttagcompound.m("Saddle"));
+        this.setSaddle(nbttagcompound.n("Saddle"));
     }
 
-    protected String h() {
+    protected String c_() {
         return "mob.pig";
     }
 
-    protected String i() {
+    protected String m() {
         return "mob.pig";
     }
 
-    protected String j() {
+    protected String n() {
         return "mob.pigdeath";
     }
 
@@ -44,12 +49,12 @@ public class EntityPig extends EntityAnimal {
             entityhuman.mount(this);
             return true;
         } else {
-            return false;
+            return super.b(entityhuman);
         }
     }
 
-    protected int k() {
-        return this.fireTicks > 0 ? Item.GRILLED_PORK.id : Item.PORK.id;
+    protected int e() {
+        return this.z() ? Item.GRILLED_PORK.id : Item.PORK.id;
     }
 
     public boolean hasSaddle() {
@@ -84,10 +89,14 @@ public class EntityPig extends EntityAnimal {
         }
     }
 
-    protected void a(float f) {
-        super.a(f);
+    protected void b(float f) {
+        super.b(f);
         if (f > 5.0F && this.passenger instanceof EntityHuman) {
             ((EntityHuman) this.passenger).a((Statistic) AchievementList.u);
         }
+    }
+
+    protected EntityAnimal createChild(EntityAnimal entityanimal) {
+        return new EntityPig(this.world);
     }
 }

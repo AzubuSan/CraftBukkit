@@ -32,12 +32,12 @@ public class EntityFishingHook extends Entity {
     public EntityFishingHook(World world) {
         super(world);
         this.b(0.25F, 0.25F);
-        this.bZ = true;
+        this.cb = true;
     }
 
     public EntityFishingHook(World world, EntityHuman entityhuman) {
         super(world);
-        this.bZ = true;
+        this.cb = true;
         this.owner = entityhuman;
         this.owner.hookedFish = this;
         this.b(0.25F, 0.25F);
@@ -79,8 +79,8 @@ public class EntityFishingHook extends Entity {
         this.i = 0;
     }
 
-    public void s_() {
-        super.s_();
+    public void x_() {
+        super.x_();
         if (this.l > 0) {
             double d0 = this.locX + (this.m - this.locX) / (double) this.l;
             double d1 = this.locY + (this.n - this.locY) / (double) this.l;
@@ -103,9 +103,9 @@ public class EntityFishingHook extends Entity {
             this.c(this.yaw, this.pitch);
         } else {
             if (!this.world.isStatic) {
-                ItemStack itemstack = this.owner.K();
+                ItemStack itemstack = this.owner.P();
 
-                if (this.owner.dead || !this.owner.ac() || itemstack == null || itemstack.getItem() != Item.FISHING_ROD || this.h(this.owner) > 1024.0D) {
+                if (this.owner.dead || !this.owner.aj() || itemstack == null || itemstack.getItem() != Item.FISHING_ROD || this.h(this.owner) > 1024.0D) {
                     this.die();
                     this.owner.hookedFish = null;
                     return;
@@ -168,7 +168,7 @@ public class EntityFishingHook extends Entity {
             for (int j = 0; j < list.size(); ++j) {
                 Entity entity1 = (Entity) list.get(j);
 
-                if (entity1.r_() && (entity1 != this.owner || this.j >= 5)) {
+                if (entity1.d_() && (entity1 != this.owner || this.j >= 5)) {
                     float f = 0.3F;
                     AxisAlignedBB axisalignedbb = entity1.boundingBox.b((double) f, (double) f, (double) f);
                     MovingObjectPosition movingobjectposition1 = axisalignedbb.a(vec3d, vec3d1);
@@ -267,7 +267,7 @@ public class EntityFishingHook extends Entity {
                     } else {
                         short short1 = 500;
 
-                        if (this.world.s(MathHelper.floor(this.locX), MathHelper.floor(this.locY) + 1, MathHelper.floor(this.locZ))) {
+                        if (this.world.v(MathHelper.floor(this.locX), MathHelper.floor(this.locY) + 1, MathHelper.floor(this.locZ))) {
                             short1 = 300;
                         }
 
@@ -325,12 +325,12 @@ public class EntityFishingHook extends Entity {
     }
 
     public void a(NBTTagCompound nbttagcompound) {
-        this.d = nbttagcompound.d("xTile");
-        this.e = nbttagcompound.d("yTile");
-        this.f = nbttagcompound.d("zTile");
-        this.g = nbttagcompound.c("inTile") & 255;
-        this.a = nbttagcompound.c("shake") & 255;
-        this.h = nbttagcompound.c("inGround") == 1;
+        this.d = nbttagcompound.e("xTile");
+        this.e = nbttagcompound.e("yTile");
+        this.f = nbttagcompound.e("zTile");
+        this.g = nbttagcompound.d("inTile") & 255;
+        this.a = nbttagcompound.d("shake") & 255;
+        this.h = nbttagcompound.d("inGround") == 1;
     }
 
     public int i() {

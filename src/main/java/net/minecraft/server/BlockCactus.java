@@ -45,12 +45,16 @@ public class BlockCactus extends Block {
         return i == 1 ? this.textureId - 1 : (i == 0 ? this.textureId + 1 : this.textureId);
     }
 
-    public boolean b() {
+    public boolean c() {
         return false;
     }
 
     public boolean a() {
         return false;
+    }
+
+    public int b() {
+        return 13;
     }
 
     public boolean canPlace(World world, int i, int j, int k) {
@@ -59,7 +63,7 @@ public class BlockCactus extends Block {
 
     public void doPhysics(World world, int i, int j, int k, int l) {
         if (!this.f(world, i, j, k)) {
-            this.g(world, i, j, k, world.getData(i, j, k));
+            this.b(world, i, j, k, world.getData(i, j, k), 0);
             world.setTypeId(i, j, k, 0);
         }
     }

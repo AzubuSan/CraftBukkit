@@ -121,7 +121,7 @@ public class EntityPainting extends Entity {
         return i == 32 ? 0.5F : (i == 64 ? 0.5F : 0.0F);
     }
 
-    public void s_() {
+    public void x_() {
         if (this.f++ == 100 && !this.world.isStatic) {
             this.f = 0;
             if (!this.i()) {
@@ -210,7 +210,7 @@ public class EntityPainting extends Entity {
         }
     }
 
-    public boolean r_() {
+    public boolean d_() {
         return true;
     }
 
@@ -236,7 +236,7 @@ public class EntityPainting extends Entity {
 
             if(!dead) {
                 this.die();
-                this.aq();
+                this.aB();
                 this.world.addEntity(new EntityItem(this.world, this.locX, this.locY, this.locZ, new ItemStack(Item.PAINTING)));
             }
             // CraftBukkit end
@@ -259,7 +259,7 @@ public class EntityPainting extends Entity {
 
         ++this.fireTicks;
         if (this.fireTicks == 0) {
-            this.fireTicks = 300;
+            this.j(8);
         }
     }
     // CraftBukkit end
@@ -273,10 +273,10 @@ public class EntityPainting extends Entity {
     }
 
     public void a(NBTTagCompound nbttagcompound) {
-        this.a = nbttagcompound.c("Dir");
-        this.b = nbttagcompound.e("TileX");
-        this.c = nbttagcompound.e("TileY");
-        this.d = nbttagcompound.e("TileZ");
+        this.a = nbttagcompound.d("Dir");
+        this.b = nbttagcompound.f("TileX");
+        this.c = nbttagcompound.f("TileY");
+        this.d = nbttagcompound.f("TileZ");
         String s = nbttagcompound.getString("Motive");
         EnumArt[] aenumart = EnumArt.values();
         int i = aenumart.length;
@@ -308,7 +308,7 @@ public class EntityPainting extends Entity {
         }
     }
 
-    public void b(double d0, double d1, double d2) {
+    public void b_(double d0, double d1, double d2) {
         if (!this.world.isStatic && d0 * d0 + d1 * d1 + d2 * d2 > 0.0D) {
 
             // CraftBukkit start

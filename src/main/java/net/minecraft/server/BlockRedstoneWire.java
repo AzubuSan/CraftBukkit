@@ -29,8 +29,12 @@ public class BlockRedstoneWire extends Block {
         return false;
     }
 
-    public boolean b() {
+    public boolean c() {
         return false;
+    }
+
+    public int b() {
+        return 5;
     }
 
     public boolean canPlace(World world, int i, int j, int k) {
@@ -280,7 +284,7 @@ public class BlockRedstoneWire extends Block {
             boolean flag = this.canPlace(world, i, j, k);
 
             if (!flag) {
-                this.g(world, i, j, k, i1);
+                this.b(world, i, j, k, i1, 0);
                 world.setTypeId(i, j, k, 0);
             } else {
                 this.g(world, i, j, k);
@@ -290,7 +294,7 @@ public class BlockRedstoneWire extends Block {
         }
     }
 
-    public int a(int i, Random random) {
+    public int a(int i, Random random, int j) {
         return Item.REDSTONE.id;
     }
 

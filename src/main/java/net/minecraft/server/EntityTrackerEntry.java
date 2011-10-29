@@ -60,7 +60,7 @@ public class EntityTrackerEntry {
         }
 
         ++this.t;
-        if (++this.l % this.c == 0 || this.tracker.ca) {
+        if (++this.l % this.c == 0 || this.tracker.cc) {
             int i = MathHelper.floor(this.tracker.locX * 32.0D);
             int j = MathHelper.floor(this.tracker.locY * 32.0D);
             int k = MathHelper.floor(this.tracker.locZ * 32.0D);
@@ -126,7 +126,7 @@ public class EntityTrackerEntry {
             }
         }
 
-        this.tracker.ca = false;
+        this.tracker.cc = false;
         if (this.tracker.velocityChanged) {
             // CraftBukkit start - create PlayerVelocity event
             boolean cancelled = false;
@@ -235,6 +235,10 @@ public class EntityTrackerEntry {
     }
 
     private Packet b() {
+        if (this.tracker.dead) {
+            System.out.println("Fetching addPacket for removed entity");
+        }
+
         if (this.tracker instanceof EntityItem) {
             EntityItem entityitem = (EntityItem) this.tracker;
             Packet21PickupSpawn packet21pickupspawn = new Packet21PickupSpawn(entityitem);
@@ -271,6 +275,8 @@ public class EntityTrackerEntry {
                 return new Packet23VehicleSpawn(this.tracker, 1);
             } else if (this.tracker instanceof IAnimal) {
                 return new Packet24MobSpawn((EntityLiving) this.tracker);
+            } else if (this.tracker instanceof EntityEnderDragon) {
+                return new Packet24MobSpawn((EntityLiving) this.tracker);
             } else if (this.tracker instanceof EntityFishingHook) {
                 return new Packet23VehicleSpawn(this.tracker, 90);
             } else if (this.tracker instanceof EntityArrow) {
@@ -279,40 +285,67 @@ public class EntityTrackerEntry {
                 return new Packet23VehicleSpawn(this.tracker, 60, entity != null ? entity.id : this.tracker.id);
             } else if (this.tracker instanceof EntitySnowball) {
                 return new Packet23VehicleSpawn(this.tracker, 61);
-            } else if (this.tracker instanceof EntityFireball) {
-                EntityFireball entityfireball = (EntityFireball) this.tracker;
-                // CraftBukkit start - added check for null shooter
-                int shooter = ((EntityFireball) this.tracker).shooter != null ? ((EntityFireball) this.tracker).shooter.id : 1;
-                Packet23VehicleSpawn packet23vehiclespawn = new Packet23VehicleSpawn(this.tracker, 63, shooter);
-                // CraftBukkit end
-
-                packet23vehiclespawn.e = (int) (entityfireball.dirX * 8000.0D);
-                packet23vehiclespawn.f = (int) (entityfireball.dirY * 8000.0D);
-                packet23vehiclespawn.g = (int) (entityfireball.dirZ * 8000.0D);
-                return packet23vehiclespawn;
-            } else if (this.tracker instanceof EntityEgg) {
-                return new Packet23VehicleSpawn(this.tracker, 62);
-            } else if (this.tracker instanceof EntityTNTPrimed) {
-                return new Packet23VehicleSpawn(this.tracker, 50);
+            } else if (this.tracker instanceof EntityPotion) {
+                return new Packet23VehicleSpawn(this.tracker, 73, ((EntityPotion) this.tracker).n_());
+            } else if (this.tracker instanceof EntityEnderPearl) {
+                return new Packet23VehicleSpawn(this.tracker, 65);
+            } else if (this.tracker instanceof EntityEnderSignal) {
+                return new Packet23VehicleSpawn(this.tracker, 72);
             } else {
-                if (this.tracker instanceof EntityFallingSand) {
-                    EntityFallingSand entityfallingsand = (EntityFallingSand) this.tracker;
+                Packet23VehicleSpawn packet23vehiclespawn;
 
-                    if (entityfallingsand.a == Block.SAND.id) {
-                        return new Packet23VehicleSpawn(this.tracker, 70);
+                if (this.tracker instanceof EntitySmallFireball) {
+                    EntitySmallFireball entitysmallfireball = (EntitySmallFireball) this.tracker;
+
+                    packet23vehiclespawn = null;
+                    if (entitysmallfireball.shooter != null) {
+                        packet23vehiclespawn = new Packet23VehicleSpawn(this.tracker, 64, entitysmallfireball.shooter.id);
+                    } else {
+                        packet23vehiclespawn = new Packet23VehicleSpawn(this.tracker, 64, 0);
                     }
 
-                    if (entityfallingsand.a == Block.GRAVEL.id) {
-                        return new Packet23VehicleSpawn(this.tracker, 71);
-                    }
-                }
+                    packet23vehiclespawn.e = (int) (entitysmallfireball.dirX * 8000.0D);
+                    packet23vehiclespawn.f = (int) (entitysmallfireball.dirY * 8000.0D);
+                    packet23vehiclespawn.g = (int) (entitysmallfireball.dirZ * 8000.0D);
+                    return packet23vehiclespawn;
+                } else if (this.tracker instanceof EntityFireball) {
+                    EntityFireball entityfireball = (EntityFireball) this.tracker;
 
-                if (this.tracker instanceof EntityPainting) {
-                    return new Packet25EntityPainting((EntityPainting) this.tracker);
-                } else if (this.tracker instanceof EntityExperienceOrb) {
-                    return new Packet26AddExpOrb((EntityExperienceOrb) this.tracker);
+                    packet23vehiclespawn = null;
+                    if (entityfireball.shooter != null) {
+                        packet23vehiclespawn = new Packet23VehicleSpawn(this.tracker, 63, ((EntityFireball) this.tracker).shooter.id);
+                    } else {
+                        packet23vehiclespawn = new Packet23VehicleSpawn(this.tracker, 63, 0);
+                    }
+
+                    packet23vehiclespawn.e = (int) (entityfireball.dirX * 8000.0D);
+                    packet23vehiclespawn.f = (int) (entityfireball.dirY * 8000.0D);
+                    packet23vehiclespawn.g = (int) (entityfireball.dirZ * 8000.0D);
+                    return packet23vehiclespawn;
+                } else if (this.tracker instanceof EntityEgg) {
+                    return new Packet23VehicleSpawn(this.tracker, 62);
+                } else if (this.tracker instanceof EntityTNTPrimed) {
+                    return new Packet23VehicleSpawn(this.tracker, 50);
                 } else {
-                    throw new IllegalArgumentException("Don\'t know how to add " + this.tracker.getClass() + "!");
+                    if (this.tracker instanceof EntityFallingSand) {
+                        EntityFallingSand entityfallingsand = (EntityFallingSand) this.tracker;
+
+                        if (entityfallingsand.a == Block.SAND.id) {
+                            return new Packet23VehicleSpawn(this.tracker, 70);
+                        }
+
+                        if (entityfallingsand.a == Block.GRAVEL.id) {
+                            return new Packet23VehicleSpawn(this.tracker, 71);
+                        }
+                    }
+
+                    if (this.tracker instanceof EntityPainting) {
+                        return new Packet25EntityPainting((EntityPainting) this.tracker);
+                    } else if (this.tracker instanceof EntityExperienceOrb) {
+                        return new Packet26AddExpOrb((EntityExperienceOrb) this.tracker);
+                    } else {
+                        throw new IllegalArgumentException("Don\'t know how to add " + this.tracker.getClass() + "!");
+                    }
                 }
             }
         }

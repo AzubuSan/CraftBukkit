@@ -17,7 +17,7 @@ public class TileEntityMobSpawner extends TileEntity {
         this.mobName = s;
     }
 
-    public boolean a() {
+    public boolean c() {
         return this.world.a((double) this.x + 0.5D, (double) this.y + 0.5D, (double) this.z + 0.5D, 16.0D) != null;
     }
 
@@ -37,9 +37,9 @@ public class TileEntityMobSpawner extends TileEntity {
     }
     // CraftBukkit end
 
-    public void h_() {
+    public void k_() {
         this.c = this.b;
-        if (this.a()) {
+        if (this.c()) {
             double d0 = (double) ((float) this.x + this.world.random.nextFloat());
             double d1 = (double) ((float) this.y + this.world.random.nextFloat());
             double d2 = (double) ((float) this.z + this.world.random.nextFloat());
@@ -53,7 +53,7 @@ public class TileEntityMobSpawner extends TileEntity {
 
             if (!this.world.isStatic) {
                 if (this.spawnDelay == -1) {
-                    this.c();
+                    this.e();
                 }
 
                 if (this.spawnDelay > 0) {
@@ -74,7 +74,7 @@ public class TileEntityMobSpawner extends TileEntity {
                     int j = this.world.a(entityliving.getClass(), AxisAlignedBB.b((double) this.x, (double) this.y, (double) this.z, (double) (this.x + 1), (double) (this.y + 1), (double) (this.z + 1)).b(8.0D, 4.0D, 8.0D)).size();
 
                     if (j >= 6) {
-                        this.c();
+                        this.e();
                         return;
                     }
 
@@ -84,7 +84,7 @@ public class TileEntityMobSpawner extends TileEntity {
                         double d5 = (double) this.z + (this.world.random.nextDouble() - this.world.random.nextDouble()) * 4.0D;
 
                         entityliving.setPositionRotation(d3, d4, d5, this.world.random.nextFloat() * 360.0F, 0.0F);
-                        if ((entityliving instanceof EntityLiving && ((EntityLiving)entityliving).d()) ||
+                        if ((entityliving instanceof EntityLiving && ((EntityLiving)entityliving).g()) ||
                             (!(entityliving instanceof EntityLiving) && entityliving.world.containsEntity(entityliving.boundingBox) && entityliving.world.getEntities(entityliving, entityliving.boundingBox).size() == 0 && !entityliving.world.c(entityliving.boundingBox))) {
                             // CraftBukkit end
                             // CraftBukkit - added a reason for spawning this creature
@@ -98,25 +98,25 @@ public class TileEntityMobSpawner extends TileEntity {
                                 this.world.a("flame", d0, d1, d2, 0.0D, 0.0D, 0.0D);
                             }
 
-                            // entity.ab(); // CraftBukkit - client side code, and not available in entity
-                            this.c();
+                            // entity.ah(); // CraftBukkit - client side code, and not available in entity
+                            this.e();
                         }
                     }
                 }
             }
 
-            super.h_();
+            super.k_();
         }
     }
 
-    private void c() {
+    private void e() {
         this.spawnDelay = 200 + this.world.random.nextInt(600);
     }
 
     public void a(NBTTagCompound nbttagcompound) {
         super.a(nbttagcompound);
         this.mobName = nbttagcompound.getString("EntityId");
-        this.spawnDelay = nbttagcompound.d("Delay");
+        this.spawnDelay = nbttagcompound.e("Delay");
     }
 
     public void b(NBTTagCompound nbttagcompound) {

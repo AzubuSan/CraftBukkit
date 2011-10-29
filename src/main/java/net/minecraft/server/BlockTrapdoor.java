@@ -21,8 +21,12 @@ public class BlockTrapdoor extends Block {
         return false;
     }
 
-    public boolean b() {
+    public boolean c() {
         return false;
+    }
+
+    public int b() {
+        return 0;
     }
 
     public AxisAlignedBB e(World world, int i, int j, int k) {
@@ -32,6 +36,12 @@ public class BlockTrapdoor extends Block {
 
     public void a(IBlockAccess iblockaccess, int i, int j, int k) {
         this.c(iblockaccess.getData(i, j, k));
+    }
+
+    public void f() {
+        float f = 0.1875F;
+
+        this.a(0.0F, 0.5F - f / 2.0F, 0.0F, 1.0F, 0.5F + f / 2.0F, 1.0F);
     }
 
     public void c(int i) {
@@ -107,7 +117,7 @@ public class BlockTrapdoor extends Block {
 
             if (!world.e(j1, j, k1)) {
                 world.setTypeId(i, j, k, 0);
-                this.g(world, i, j, k, i1);
+                this.b(world, i, j, k, i1, 0);
             }
 
             // CraftBukkit start

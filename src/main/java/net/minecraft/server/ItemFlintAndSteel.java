@@ -13,7 +13,7 @@ public class ItemFlintAndSteel extends Item {
     public ItemFlintAndSteel(int i) {
         super(i);
         this.maxStackSize = 1;
-        this.d(64);
+        this.f(64);
     }
 
     public boolean a(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l) {
@@ -43,7 +43,7 @@ public class ItemFlintAndSteel extends Item {
             ++i;
         }
 
-        if (!entityhuman.c(i, j, k)) {
+        if (!entityhuman.d(i, j, k)) {
             return false;
         } else {
             int i1 = world.getTypeId(i, j, k);

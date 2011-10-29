@@ -27,13 +27,15 @@ public class BlockStationary extends BlockFluids {
         world.suppressPhysics = true;
         world.setRawTypeIdAndData(i, j, k, this.id - 1, l);
         world.b(i, j, k, i, j, k);
-        world.c(i, j, k, this.id - 1, this.c());
+        world.c(i, j, k, this.id - 1, this.d());
         world.suppressPhysics = false;
     }
 
     public void a(World world, int i, int j, int k, Random random) {
+        int l;
+
         if (this.material == Material.LAVA) {
-            int l = random.nextInt(3);
+            l = random.nextInt(3);
 
             // CraftBukkit start - prevent lava putting something on fire.
             org.bukkit.World bworld = world.getWorld();
@@ -66,6 +68,15 @@ public class BlockStationary extends BlockFluids {
                     }
                 } else if (Block.byId[j1].material.isSolid()) {
                     return;
+                }
+            }
+        } else if (this.material == Material.WATER) {
+            l = world.getData(i, j, k);
+            if (l > 0 && l <= 8) {
+                if (this.g(world, i + 1, j, k) == 0 && this.g(world, i - 1, j, k) == 0 && this.g(world, i, j, k + 1) == 0 && this.g(world, i, j, k - 1) == 0) {
+                    world.setData(i, j, k, 0);
+                } else if (world.getTypeId(i, j + 1, k) == this.id) {
+                    world.setData(i, j, k, 0);
                 }
             }
         }

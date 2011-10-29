@@ -81,7 +81,6 @@ import org.yaml.snakeyaml.error.MarkedYAMLException;
 public final class CraftServer implements Server {
     private final String serverName = "Craftbukkit";
     private final String serverVersion;
-    private final String protocolVersion = "1.8.1";
     private final ServicesManager servicesManager = new SimpleServicesManager();
     private final BukkitScheduler scheduler = new CraftScheduler(this);
     private final SimpleCommandMap commandMap = new SimpleCommandMap(this);
@@ -189,7 +188,7 @@ public final class CraftServer implements Server {
     }
 
     public String getVersion() {
-        return serverVersion + " (MC: " + protocolVersion + ")";
+        return serverVersion + " (MC: " + console.getVersion() + ")";
     }
 
     @SuppressWarnings("unchecked")
@@ -461,7 +460,7 @@ public final class CraftServer implements Server {
 
     @Override
     public String toString() {
-        return "CraftServer{" + "serverName=" + serverName + ",serverVersion=" + serverVersion + ",protocolVersion=" + protocolVersion + '}';
+        return "CraftServer{" + "serverName=" + serverName + ",serverVersion=" + serverVersion + ",minecraftVersion=" + console.getVersion() + '}';
     }
 
     public World createWorld(String name, World.Environment environment) {
@@ -509,7 +508,8 @@ public final class CraftServer implements Server {
         }
 
         int dimension = 10 + console.worlds.size();
-        WorldServer internal = new WorldServer(console, new ServerNBTManager(getWorldContainer(), name, true), name, dimension, new WorldSettings(creator.seed(), getDefaultGameMode().getValue(), true), creator.environment(), generator);
+        boolean hardcore = false;
+        WorldServer internal = new WorldServer(console, new ServerNBTManager(getWorldContainer(), name, true), name, dimension, new WorldSettings(creator.seed(), getDefaultGameMode().getValue(), true, hardcore), creator.environment(), generator);
 
         if (!(worlds.containsKey(name.toLowerCase()))) {
             return null;
