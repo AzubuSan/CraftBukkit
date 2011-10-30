@@ -298,9 +298,7 @@ public class BlockPiston extends Block {
                         ++l1;
                         continue;
                     }
-                    return l1; // CraftBukkit
                 }
-                return -1; // CraftBukkit
             }
 
             return l1; // CraftBukkit
