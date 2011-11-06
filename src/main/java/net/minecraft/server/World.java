@@ -1822,6 +1822,10 @@ public class World implements IBlockAccess {
         // CraftBukkit end
     }
 
+    public void j() {
+        this.worldData.setWeatherDuration(1);
+    }
+
     protected void k() {
         this.T.clear();
         MethodProfiler.a("buildList");
