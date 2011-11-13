@@ -480,18 +480,36 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         return GameMode.getByValue(getHandle().itemInWorldManager.a());
     }
 
+    // This should be a float in order to not remove experience a player already has!
     public int getExperience() {
-        return getHandle().exp;
+        return (int) getHandle().exp;
     }
 
+    // Should have, "Add Experience"
+    // Should have, "Remove Experience"
+    // This doesn't work! This removes the "exp buffer" players have.
+    // Set experience should actually... "set" experience, not add!
     public void setExperience(int exp) {
-        getHandle().d(exp - getExperience());
+        setLevel(0);
+        setTotalExperience(0);
+        //getHandle().h(exp - getExperience());
+        getHandle().exp = exp;
+    }
+
+    // Score modifiers should be added into the API
+    public int getScore() {
+        return getHandle().p;
+    }
+
+    public void setScore(int score) {
+        getHandle().p = score;
     }
 
     public int getLevel() {
-        return (int)getHandle().expLevel;
+        return getHandle().expLevel;
     }
 
+    // This should never be public! Screws up experience!
     public void setLevel(int level) {
         getHandle().expLevel = level;
     }
@@ -500,11 +518,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         return getHandle().expTotal;
     }
 
+    // This should never be public! Screws up with experience level!
     public void setTotalExperience(int exp) {
         getHandle().expTotal = exp;
-
-        if (getTotalExperience() > getExperience()) {
-            getHandle().exp = getTotalExperience();
+        if(getTotalExperience() < getExperience()) {
+            getHandle().exp = exp;
         }
     }
 
@@ -543,9 +561,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     public Map<String, Object> serialize() {
         Map<String, Object> result = new LinkedHashMap<String, Object>();
-        
+
         result.put("name", getName());
-        
+
         return result;
     }
 

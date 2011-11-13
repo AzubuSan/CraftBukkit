@@ -25,7 +25,7 @@ public abstract class EntityHuman extends EntityLiving {
     protected FoodMetaData foodData = new FoodMetaData();
     protected int n = 0;
     public byte o = 0;
-    public int p = 0;
+    public int p = 0; // This is score, does not do anything in pre 5
     public float q;
     public float r;
     public boolean s = false;
@@ -54,9 +54,9 @@ public abstract class EntityHuman extends EntityLiving {
     protected boolean I = false;
     public float J;
     public PlayerAbilities abilities = new PlayerAbilities();
+    public int expLevel;
     public int expTotal;
-    public int exp;
-    public float expLevel;
+    public float exp;
     private ItemStack d;
     private int e;
     protected float O = 0.1F;
@@ -479,9 +479,9 @@ public abstract class EntityHuman extends EntityLiving {
         this.dimension = nbttagcompound.f("Dimension");
         this.sleeping = nbttagcompound.n("Sleeping");
         this.sleepTicks = nbttagcompound.e("SleepTimer");
-        this.expLevel = nbttagcompound.h("XpP");
-        this.expTotal = nbttagcompound.f("XpLevel");
-        this.exp = nbttagcompound.f("XpTotal");
+        this.exp = nbttagcompound.h("XpP");
+        this.expLevel = nbttagcompound.f("XpLevel");
+        this.expTotal = nbttagcompound.f("XpTotal");
         if (this.sleeping) {
             this.E = new ChunkCoordinates(MathHelper.floor(this.locX), MathHelper.floor(this.locY), MathHelper.floor(this.locZ));
             this.a(true, true, false);
@@ -508,9 +508,9 @@ public abstract class EntityHuman extends EntityLiving {
         nbttagcompound.a("Dimension", this.dimension);
         nbttagcompound.a("Sleeping", this.sleeping);
         nbttagcompound.a("SleepTimer", (short) this.sleepTicks);
-        nbttagcompound.a("XpP", this.expLevel);
-        nbttagcompound.a("XpLevel", this.expTotal);
-        nbttagcompound.a("XpTotal", this.exp);
+        nbttagcompound.a("XpP", this.exp);
+        nbttagcompound.a("XpLevel", this.expLevel);
+        nbttagcompound.a("XpTotal", this.expTotal);
         if (this.b != null) {
             nbttagcompound.a("SpawnX", this.b.x);
             nbttagcompound.a("SpawnY", this.b.y);
@@ -1170,28 +1170,28 @@ public abstract class EntityHuman extends EntityLiving {
 
     public void h(int i) {
         this.p += i;
-        this.expLevel += (float) i / (float) this.Z();
-        this.exp += i;
+        this.exp += (float) i / (float) this.Z();
+        this.expTotal += i;
 
-        while (this.expLevel >= 1.0F) {
-            --this.expLevel;
+        while (this.exp >= 1.0F) {
+            --this.exp;
             this.D();
         }
     }
 
     public void b(int i) {
-        this.expTotal -= i;
-        if (this.expTotal < 0) {
-            this.expTotal = 0;
+        this.expLevel -= i;
+        if (this.expLevel < 0) {
+            this.expLevel = 0;
         }
     }
 
     public int Z() {
-        return (this.expTotal + 1) * 7;
+        return (this.expLevel + 1) * 7;
     }
 
     private void D() {
-        ++this.expTotal;
+        ++this.expLevel;
     }
 
     public void c(float f) {
@@ -1229,7 +1229,7 @@ public abstract class EntityHuman extends EntityLiving {
     }
 
     protected int a(EntityHuman entityhuman) {
-        int i = this.expTotal * 7;
+        int i = this.expLevel * 7;
 
         return i > 100 ? 100 : i;
     }

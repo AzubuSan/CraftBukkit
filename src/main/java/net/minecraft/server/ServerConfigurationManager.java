@@ -260,10 +260,10 @@ public class ServerConfigurationManager {
             entityplayer.fireTicks = 0;
             entityplayer.fallDistance = 0;
             entityplayer.foodData = new FoodMetaData();
+            entityplayer.expLevel = 0;
             entityplayer.expTotal = 0;
             entityplayer.exp = 0;
-            entityplayer.expLevel = 0;
-            entityplayer.d(entityplayer.newExp);
+            entityplayer.h(entityplayer.newExp);
         } else {
             location.setWorld(this.server.getWorldServer(i).getWorld());
         }

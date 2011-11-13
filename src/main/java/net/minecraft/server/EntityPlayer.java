@@ -11,7 +11,6 @@ import org.bukkit.craftbukkit.ChunkCompressionThread;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
 // CraftBukkit end
 
@@ -308,9 +307,9 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
             this.cf = this.foodData.c() == 0.0F;
         }
 
-        if (this.exp != this.cg) {
-            this.cg = this.exp;
-            this.netServerHandler.sendPacket(new Packet43SetExperience(this.expLevel, this.exp, this.expTotal));
+        if (this.expTotal != this.cg) {
+            this.cg = this.expTotal;
+            this.netServerHandler.sendPacket(new Packet43SetExperience(this.exp, this.expTotal, this.expLevel));
         }
     }
 
