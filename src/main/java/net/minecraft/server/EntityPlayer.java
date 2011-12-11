@@ -11,7 +11,6 @@ import org.bukkit.craftbukkit.ChunkCompressionThread;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
 // CraftBukkit end
 
@@ -27,7 +26,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
     private int cc = -99999999;
     private int cd = -99999999;
     private boolean ce = true;
-    public int cf = -99999999; // Craftbukkit - priv to pub - "lastSentExp"
+    private int cf = -99999999;
     private int cg = 60;
     private ItemStack[] ch = new ItemStack[] { null, null, null, null, null};
     private int ci = 0;
@@ -558,6 +557,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
 
     public void s_() {
         this.cc = -99999999;
+        this.cf = -1; // CraftBukkit added
     }
 
     public void a(String s) {
