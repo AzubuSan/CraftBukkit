@@ -1,6 +1,5 @@
 package net.minecraft.server;
 
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -28,6 +27,7 @@ import org.bukkit.craftbukkit.scheduler.CraftScheduler;
 import org.bukkit.craftbukkit.util.ServerShutdownThread;
 import org.bukkit.event.Event;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.server.ServerReadyEvent;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldSaveEvent;
@@ -144,6 +144,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
 
         this.serverConfigurationManager = new ServerConfigurationManager(this);
         // CraftBukkit - removed trackers
+        this.server.getPluginManager().callEvent(new ServerReadyEvent());
         long i = System.nanoTime();
         String s = this.propertyManager.getString("level-name", "world");
         String s1 = this.propertyManager.getString("level-seed", "");

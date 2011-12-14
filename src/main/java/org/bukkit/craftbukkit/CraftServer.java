@@ -2,7 +2,6 @@ package org.bukkit.craftbukkit;
 
 import java.io.FileNotFoundException;
 
-import org.bukkit.craftbukkit.command.CraftConsoleCommandSender;
 import org.bukkit.generator.ChunkGenerator;
 import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.ServerConfig;
@@ -56,6 +55,7 @@ import net.minecraft.server.WorldMapCollection;
 import net.minecraft.server.WorldNBTStorage;
 import net.minecraft.server.WorldSettings;
 import org.bukkit.*;
+import org.bukkit.event.server.ServerReloadEvent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -434,6 +434,8 @@ public final class CraftServer implements Server {
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
         enablePlugins(PluginLoadOrder.POSTWORLD);
+
+        pluginManager.callEvent(new ServerReloadEvent());
     }
 
     private void loadCustomPermissions() {
