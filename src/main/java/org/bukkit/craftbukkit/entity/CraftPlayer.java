@@ -2,10 +2,12 @@ package org.bukkit.craftbukkit.entity;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.minecraft.server.EntityHuman;
 import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.Packet131ItemData;
 import net.minecraft.server.Packet200Statistic;
 import net.minecraft.server.Packet201PlayerInfo;
@@ -24,6 +26,7 @@ import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Note;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
@@ -39,8 +42,14 @@ import org.bukkit.map.MapView;
 
 @DelegateDeserialization(CraftOfflinePlayer.class)
 public class CraftPlayer extends CraftHumanEntity implements Player {
+    private long firstPlayed = 0;
+    private long lastPlayed = 0;
+    private boolean hasPlayedBefore = false;
+
     public CraftPlayer(CraftServer server, EntityPlayer entity) {
         super(server, entity);
+
+        firstPlayed = System.currentTimeMillis();
     }
 
     @Override
@@ -160,14 +169,14 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof OfflinePlayer)) {
             return false;
         }
-        final CraftPlayer other = (CraftPlayer) obj;
-        if ((this.getName() == null) ? (other.getName() != null) : !this.getName().equals(other.getName())) {
+        OfflinePlayer other = (OfflinePlayer)obj;
+        if ((this.getName() == null) || (other.getName() == null)) {
             return false;
         }
-        return true;
+        return this.getName().equalsIgnoreCase(other.getName());
     }
 
     public void kickPlayer(String message) {
@@ -488,6 +497,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     public void setLevel(int level) {
         getHandle().expLevel = level;
+        getHandle().cf = -1;
     }
 
     public int getTotalExperience() {
@@ -496,6 +506,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     public void setTotalExperience(int exp) {
         getHandle().expTotal = exp;
+        getHandle().cf = -1;
 
         if (getTotalExperience() > getExperience()) {
             getHandle().expTotal = getTotalExperience();
@@ -566,5 +577,43 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         int hash = 5;
         hash = 97 * hash + (this.getName() != null ? this.getName().hashCode() : 0);
         return hash;
+    }
+
+    public long getFirstPlayed() {
+        return firstPlayed;
+    }
+
+    public long getLastPlayed() {
+        return lastPlayed;
+    }
+
+    public boolean hasPlayedBefore() {
+        return hasPlayedBefore;
+    }
+
+    public void setFirstPlayed(long firstPlayed) {
+        this.firstPlayed = firstPlayed;
+    }
+
+    public void readExtraData(NBTTagCompound nbttagcompound) {
+        hasPlayedBefore = true;
+        if (nbttagcompound.hasKey("bukkit")) {
+            NBTTagCompound data = nbttagcompound.getCompound("bukkit");
+
+            if (data.hasKey("firstPlayed")) {
+                firstPlayed = data.getLong("firstPlayed");
+                lastPlayed = data.getLong("lastPlayed");
+            }
+        }
+    }
+
+    public void setExtraData(NBTTagCompound nbttagcompound) {
+        if (!nbttagcompound.hasKey("bukkit")) {
+            nbttagcompound.setCompound("bukkit", new NBTTagCompound());
+        }
+
+        NBTTagCompound data = nbttagcompound.getCompound("bukkit");
+        data.setLong("firstPlayed", getFirstPlayed());
+        data.setLong("lastPlayed", System.currentTimeMillis());
     }
 }

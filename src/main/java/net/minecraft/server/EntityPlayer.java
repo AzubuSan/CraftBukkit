@@ -9,7 +9,9 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.ChunkCompressionThread;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.event.entity.PlayerDeathEvent;
 // CraftBukkit end
@@ -27,7 +29,7 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
     private int cd = -99999999;
     private boolean ce = true;
     private int cf = -99999999;
-    private int cg = 60;
+    public int cg = 60; // CraftBukkit - private to public; temporary until we get an API out
     private ItemStack[] ch = new ItemStack[] { null, null, null, null, null};
     private int ci = 0;
     public boolean h;
@@ -74,11 +76,13 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
         if (nbttagcompound.hasKey("playerGameType")) {
             this.itemInWorldManager.a(nbttagcompound.getInt("playerGameType"));
         }
+        getPlayer().readExtraData(nbttagcompound); // CraftBukkit
     }
 
     public void b(NBTTagCompound nbttagcompound) {
         super.b(nbttagcompound);
         nbttagcompound.setInt("playerGameType", this.itemInWorldManager.a());
+        getPlayer().setExtraData(nbttagcompound); // CraftBukkit
     }
 
     public void spawnIn(World world) {
@@ -325,11 +329,13 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
             this.netServerHandler.sendPacket(new Packet70Bed(4, 0));
         } else {
             this.a((Statistic) AchievementList.B);
+            /* //CraftBukkit start - removed to fix our handling of The End portals
             ChunkCoordinates chunkcoordinates = this.b.getWorldServer(i).d();
 
             if (chunkcoordinates != null) {
                 this.netServerHandler.a((double) chunkcoordinates.x, (double) chunkcoordinates.y, (double) chunkcoordinates.z, 0.0F, 0.0F);
             }
+            //CraftBukkit end */
 
             this.b.serverConfigurationManager.changeDimension(this, 1);
             this.cf = -1;
@@ -659,6 +665,10 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
             this.giveExp(this.newExp);
         }
         this.keepLevel = false;
+    }
+
+    public CraftPlayer getPlayer() {
+        return (CraftPlayer)getBukkitEntity();
     }
     // CraftBukkit end
 }

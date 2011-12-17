@@ -56,7 +56,7 @@ public abstract class EntityLiving extends Entity {
     public float aC;
     public float aD;
     public float aE;
-    protected EntityHuman aF = null;
+    public EntityHuman aF = null; // CraftBukkit - prot to pub - "killer"
     protected int aG = 0;
     public int aH = 0;
     public int aI = 0;
@@ -225,7 +225,7 @@ public abstract class EntityLiving extends Entity {
 
     protected void ag() {
         ++this.deathTicks;
-        if (this.deathTicks == 20) {
+        if (this.deathTicks >= 20 && !this.dead) { // CraftBukkit - (this.deathTicks == 20) -> (this.deathTicks >= 20 && !this.dead).
             int i;
 
             // CraftBukkit start - update getExpReward() above if the removed if() changes!

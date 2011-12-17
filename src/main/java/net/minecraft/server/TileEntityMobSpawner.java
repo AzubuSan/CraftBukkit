@@ -21,22 +21,6 @@ public class TileEntityMobSpawner extends TileEntity {
         return this.world.findNearbyPlayer((double) this.x + 0.5D, (double) this.y + 0.5D, (double) this.z + 0.5D, 16.0D) != null;
     }
 
-    // CraftBukkit start
-    public int getId() {
-        return EntityTypes.getIdFromClass(EntityTypes.getClassFromName(mobName));
-    }
-
-    public void setId(int id) {
-        mobName = EntityTypes.getNameFromClass(EntityTypes.getClassFromId(id));
-        if (mobName == null || mobName.length() == 0) {
-            mobName = "Pig";
-        }
-        if  (EntityTypes.a(mobName,  world) == null) {
-            mobName = "Pig";
-        }
-    }
-    // CraftBukkit end
-
     public void l_() {
         this.c = this.b;
         if (this.c()) {
@@ -64,11 +48,20 @@ public class TileEntityMobSpawner extends TileEntity {
                 byte b0 = 4;
 
                 for (int i = 0; i < b0; ++i) {
-                    Entity entityliving = EntityTypes.a(this.mobName, this.world); // CraftBukkit
+                    // CraftBukkit start - bad entity detection
+                    Entity mob = EntityTypes.a(this.mobName, this.world);
+
+                    if (!(mob instanceof EntityLiving)) {
+                        mobName = "Pig";
+                        return;
+                    }
+
+                    EntityLiving entityliving = (EntityLiving) ((EntityLiving) mob);
 
                     if (entityliving == null) {
                         return;
                     }
+                    // CraftBukkit end
 
                     int j = this.world.a(entityliving.getClass(), AxisAlignedBB.b((double) this.x, (double) this.y, (double) this.z, (double) (this.x + 1), (double) (this.y + 1), (double) (this.z + 1)).b(8.0D, 4.0D, 8.0D)).size();
 
@@ -84,13 +77,12 @@ public class TileEntityMobSpawner extends TileEntity {
 
                         entityliving.setPositionRotation(d3, d4, d5, this.world.random.nextFloat() * 360.0F, 0.0F);
                         // CraftBukkit start
-                        if ((entityliving instanceof EntityLiving && ((EntityLiving) entityliving).g()) ||
-                            (!(entityliving instanceof EntityLiving) && entityliving.world.containsEntity(entityliving.boundingBox) && entityliving.world.getEntities(entityliving, entityliving.boundingBox).size() == 0 && !entityliving.world.c(entityliving.boundingBox))) {
+                        if (entityliving.g()) {
                             this.world.addEntity(entityliving, SpawnReason.SPAWNER);
                             // CraftBukkit end
 
                             this.world.f(2004, this.x, this.y, this.z, 0);
-                            // entityliving.ah(); // CraftBukkit -- only avail on clientside
+                            entityliving.ah();
                             this.e();
                         }
                     }
