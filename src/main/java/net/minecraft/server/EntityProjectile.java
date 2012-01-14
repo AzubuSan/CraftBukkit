@@ -1,6 +1,11 @@
 package net.minecraft.server;
 
 import java.util.List;
+// CraftBukkit start
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.ProjectileHitEvent;
+// CraftBukkit end
 
 public abstract class EntityProjectile extends Entity {
 
@@ -25,7 +30,7 @@ public abstract class EntityProjectile extends Entity {
         super(world);
         this.shooter = entityliving;
         this.b(0.25F, 0.25F);
-        this.setPositionRotation(entityliving.locX, entityliving.locY + (double) entityliving.x(), entityliving.locZ, entityliving.yaw, entityliving.pitch);
+        this.setPositionRotation(entityliving.locX, entityliving.locY + (double) entityliving.y(), entityliving.locZ, entityliving.yaw, entityliving.pitch);
         this.locX -= (double) (MathHelper.cos(this.yaw / 180.0F * 3.1415927F) * 0.16F);
         this.locY -= 0.10000000149011612D;
         this.locZ -= (double) (MathHelper.sin(this.yaw / 180.0F * 3.1415927F) * 0.16F);
@@ -77,11 +82,11 @@ public abstract class EntityProjectile extends Entity {
         this.h = 0;
     }
 
-    public void w_() {
-        this.bI = this.locX;
-        this.bJ = this.locY;
-        this.bK = this.locZ;
-        super.w_();
+    public void y_() {
+        this.bL = this.locX;
+        this.bM = this.locY;
+        this.bN = this.locZ;
+        super.y_();
         if (this.shake > 0) {
             --this.shake;
         }
@@ -120,7 +125,7 @@ public abstract class EntityProjectile extends Entity {
 
         if (!this.world.isStatic) {
             Entity entity = null;
-            List list = this.world.b((Entity) this, this.boundingBox.a(this.motX, this.motY, this.motZ).b(1.0D, 1.0D, 1.0D));
+            List list = this.world.getEntities(this, this.boundingBox.a(this.motX, this.motY, this.motZ).grow(1.0D, 1.0D, 1.0D));
             double d0 = 0.0D;
 
             for (int j = 0; j < list.size(); ++j) {
@@ -128,7 +133,7 @@ public abstract class EntityProjectile extends Entity {
 
                 if (entity1.e_() && (entity1 != this.shooter || this.i >= 5)) {
                     float f = 0.3F;
-                    AxisAlignedBB axisalignedbb = entity1.boundingBox.b((double) f, (double) f, (double) f);
+                    AxisAlignedBB axisalignedbb = entity1.boundingBox.grow((double) f, (double) f, (double) f);
                     MovingObjectPosition movingobjectposition1 = axisalignedbb.a(vec3d, vec3d1);
 
                     if (movingobjectposition1 != null) {
@@ -149,6 +154,12 @@ public abstract class EntityProjectile extends Entity {
 
         if (movingobjectposition != null) {
             this.a(movingobjectposition);
+            // CraftBukkit start
+            if (this.dead) {
+                ProjectileHitEvent hitEvent = new ProjectileHitEvent((Projectile) this.getBukkitEntity());
+                Bukkit.getPluginManager().callEvent(hitEvent);
+            }
+            // CraftBukkit end
         }
 
         this.locX += this.motX;
@@ -179,7 +190,7 @@ public abstract class EntityProjectile extends Entity {
         float f2 = 0.99F;
         float f3 = this.e();
 
-        if (this.az()) {
+        if (this.aK()) {
             for (int k = 0; k < 4; ++k) {
                 float f4 = 0.25F;
 

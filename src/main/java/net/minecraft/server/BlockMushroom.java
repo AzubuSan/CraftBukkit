@@ -2,14 +2,14 @@ package net.minecraft.server;
 
 import java.util.ArrayList;
 import java.util.Random;
-// Craftbukkit start
+// CraftBukkit start
 import org.bukkit.Location;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-// Craftbukkit end
+// CraftBukkit end
 
 public class BlockMushroom extends BlockFlower {
 
@@ -108,10 +108,13 @@ public class BlockMushroom extends BlockFlower {
             event = new StructureGrowEvent(location, TreeType.RED_MUSHROOM, bonemeal, player, new ArrayList<BlockState>());
             worldgenhugemushroom = new WorldGenHugeMushroom(1);
         }
-        if (worldgenhugemushroom != null && event != null){
+        if (worldgenhugemushroom != null && event != null) {
             grown = worldgenhugemushroom.grow(world, random, i, j, k, event, itemstack, world.getWorld());
+            if (event.isFromBonemeal() && itemstack != null) {
+                --itemstack.count;
+            }
         }
-        if (!grown || event.isCancelled()){
+        if (!grown || event.isCancelled()) {
             world.setRawTypeIdAndData(i, j, k, this.id, l);
             return false;
         }

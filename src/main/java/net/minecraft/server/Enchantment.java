@@ -3,7 +3,7 @@ package net.minecraft.server;
 import org.bukkit.craftbukkit.enchantments.CraftEnchantment;
 
 public abstract class Enchantment {
-// CraftBukkit comment - update CraftEnchant.getName(i) if this changes.
+// CraftBukkit - update CraftEnchant.getName(i) if this changes.
     public static final Enchantment[] byId = new Enchantment[256];
     public static final Enchantment PROTECTION_ENVIRONMENTAL = new EnchantmentProtection(0, 10, 0);
     public static final Enchantment PROTECTION_FIRE = new EnchantmentProtection(1, 5, 1);
@@ -22,6 +22,10 @@ public abstract class Enchantment {
     public static final Enchantment SILK_TOUCH = new EnchantmentSilkTouch(33, 1);
     public static final Enchantment DURABILITY = new EnchantmentDurability(34, 5);
     public static final Enchantment LOOT_BONUS_BLOCKS = new EnchantmentLootBonus(35, 2, EnchantmentSlotType.DIGGER);
+    public static final Enchantment ARROW_DAMAGE = new EnchantmentArrowDamage(48, 10);
+    public static final Enchantment ARROW_KNOCKBACK = new EnchantmentArrowKnockback(49, 2);
+    public static final Enchantment ARROW_FIRE = new EnchantmentFlameArrows(50, 2);
+    public static final Enchantment ARROW_INFINITE = new EnchantmentInfiniteArrows(51, 1);
     public final int id;
     private final int weight;
     public EnchantmentSlotType slot;
@@ -37,9 +41,7 @@ public abstract class Enchantment {
             byId[i] = this;
         }
 
-        // CraftBukkit start
-        org.bukkit.enchantments.Enchantment.registerEnchantment(new CraftEnchantment(this));
-        // CraftBukkit end
+        org.bukkit.enchantments.Enchantment.registerEnchantment(new CraftEnchantment(this)); // CraftBukkit
     }
 
     public int getRandomWeight() {

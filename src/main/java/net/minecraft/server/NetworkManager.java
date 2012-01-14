@@ -223,7 +223,7 @@ public class NetworkManager {
         while (!this.m.isEmpty() && i-- >= 0) {
             Packet packet = (Packet) this.m.remove(0);
 
-            packet.a(this.p);
+            if (!this.q) packet.a(this.p); // CraftBukkit
         }
 
         this.a();
@@ -237,10 +237,12 @@ public class NetworkManager {
     }
 
     public void d() {
-        this.a();
-        this.q = true;
-        this.s.interrupt();
-        (new NetworkMonitorThread(this)).start();
+        if (!this.q) {
+            this.a();
+            this.q = true;
+            this.s.interrupt();
+            (new NetworkMonitorThread(this)).start();
+        }
     }
 
     public int e() {

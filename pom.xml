@@ -4,12 +4,13 @@
   <groupId>org.bukkit</groupId>
   <artifactId>craftbukkit</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1-R1</version>
+  <version>1.1-R1-SNAPSHOT</version>
   <name>CraftBukkit</name>
   <url>http://www.bukkit.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <api.version>unknown</api.version>
+    <junit.version>4.10</junit.version>
   </properties>
   <scm>
     <connection>scm:git:git://github.com/Bukkit/CraftBukkit.git</connection>
@@ -44,14 +45,14 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.0.1-R2-SNAPSHOT</version>
+      <version>1.1-R1-SNAPSHOT</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>minecraft-server</artifactId>
-      <version>1.0.1</version>
+      <version>1.1</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
@@ -103,6 +104,11 @@
       <version>10.0</version>
       <type>jar</type>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
     </dependency>
   </dependencies>
   <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
@@ -194,37 +200,45 @@
           <target>1.5</target>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.11</version>
+        <configuration>
+          <workingDirectory>${basedir}/target/test-server</workingDirectory>
+        </configuration>
+      </plugin>
     </plugins>
     <pluginManagement>
-    	<plugins>
-    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    		<plugin>
-    			<groupId>org.eclipse.m2e</groupId>
-    			<artifactId>lifecycle-mapping</artifactId>
-    			<version>1.0.0</version>
-    			<configuration>
-    				<lifecycleMappingMetadata>
-    					<pluginExecutions>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>com.lukegb.mojo</groupId>
-    								<artifactId>
-    									gitdescribe-maven-plugin
-    								</artifactId>
-    								<versionRange>[1.3,)</versionRange>
-    								<goals>
-    									<goal>gitdescribe</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    					</pluginExecutions>
-    				</lifecycleMappingMetadata>
-    			</configuration>
-    		</plugin>
-    	</plugins>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>com.lukegb.mojo</groupId>
+                    <artifactId>
+                      gitdescribe-maven-plugin
+                    </artifactId>
+                    <versionRange>[1.3,)</versionRange>
+                    <goals>
+                      <goal>gitdescribe</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
     </pluginManagement>
   </build>
 </project>

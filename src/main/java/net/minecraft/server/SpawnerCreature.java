@@ -15,7 +15,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
 public final class SpawnerCreature {
 
-    // private static HashMap b = new HashMap(); // CraftBukkit -- moved local to spawnEntities
+    // private static HashMap b = new HashMap(); // CraftBukkit - moved local to spawnEntities
     static private class ChunkEntry extends EntryBase {
         public boolean spawn;
         public ChunkEntry (int x, int z, boolean spawn) {
@@ -197,7 +197,7 @@ public final class SpawnerCreature {
     }
 
     public static void a(World world, BiomeBase biomebase, int i, int j, int k, int l, Random random) {
-        List list = biomebase.a(EnumCreatureType.CREATURE);
+        List list = biomebase.getMobs(EnumCreatureType.CREATURE);
 
         if (!list.isEmpty()) {
             while (random.nextFloat() < biomebase.d()) {

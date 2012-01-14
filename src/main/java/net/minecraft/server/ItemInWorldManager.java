@@ -36,7 +36,7 @@ public class ItemInWorldManager {
     }
     // CraftBukkit end
 
-    public void a(int i) {
+    public void setGameMode(int i) {
         this.c = i;
         if (i == 0) {
             this.player.abilities.canFly = false;
@@ -50,7 +50,7 @@ public class ItemInWorldManager {
         }
     }
 
-    public int a() {
+    public int getGameMode() {
         return this.c;
     }
 
@@ -63,7 +63,7 @@ public class ItemInWorldManager {
             this.c = i;
         }
 
-        this.a(this.c);
+        this.setGameMode(this.c);
     }
 
     public void c() {
@@ -93,6 +93,8 @@ public class ItemInWorldManager {
 
         if (this.b()) {
             if (event.isCancelled()) {
+                // Let the client know the block still exists
+                ((EntityPlayer) this.player).netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
                 return;
             }
             this.c(i, j, k);
@@ -133,6 +135,8 @@ public class ItemInWorldManager {
             BlockDamageEvent blockEvent = CraftEventFactory.callBlockDamageEvent(this.player, i, j, k, this.player.inventory.getItemInHand(), toolDamage >= 1.0f);
 
             if (blockEvent.isCancelled()) {
+                // Let the client know the block still exists
+                ((EntityPlayer) this.player).netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
                 return;
             }
 
@@ -201,6 +205,8 @@ public class ItemInWorldManager {
             this.world.getServer().getPluginManager().callEvent(event);
 
             if (event.isCancelled()) {
+                // Let the client know the block still exists
+                ((EntityPlayer) this.player).netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
                 return false;
             }
         }
@@ -215,14 +221,14 @@ public class ItemInWorldManager {
         if (this.b()) {
             ((EntityPlayer) this.player).netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
         } else {
-            ItemStack itemstack = this.player.P();
+            ItemStack itemstack = this.player.Q();
             boolean flag1 = this.player.b(Block.byId[l]);
 
             if (itemstack != null) {
                 itemstack.a(l, i, j, k, this.player);
                 if (itemstack.count == 0) {
                     itemstack.a(this.player);
-                    this.player.Q();
+                    this.player.R();
                 }
             }
 

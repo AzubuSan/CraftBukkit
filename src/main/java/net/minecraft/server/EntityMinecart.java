@@ -51,7 +51,7 @@ public class EntityMinecart extends Entity implements IInventory {
         this.items = new ItemStack[27]; // CraftBukkit
         this.e = 0;
         this.f = false;
-        this.bc = true;
+        this.bf = true;
         this.b(0.98F, 0.7F);
         this.height = this.length / 2.0F;
     }
@@ -115,7 +115,7 @@ public class EntityMinecart extends Entity implements IInventory {
 
             this.d(-this.m());
             this.c(10);
-            this.aB();
+            this.aM();
             this.setDamage(this.getDamage() + i * 10);
             if (this.getDamage() > 40) {
                 if (this.passenger != null) {
@@ -211,7 +211,7 @@ public class EntityMinecart extends Entity implements IInventory {
         super.die();
     }
 
-    public void w_() {
+    public void y_() {
         // CraftBukkit start
         double prevX = this.locX;
         double prevY = this.locY;
@@ -513,7 +513,7 @@ public class EntityMinecart extends Entity implements IInventory {
                     this.motX *= this.derailedX;
                     this.motY *= this.derailedY;
                     this.motZ *= this.derailedZ;
-                    // CraftBukkit start
+                    // CraftBukkit end
                 }
 
                 this.move(this.motX, this.motY, this.motZ);
@@ -522,7 +522,7 @@ public class EntityMinecart extends Entity implements IInventory {
                     this.motX *= this.flyingX;
                     this.motY *= this.flyingY;
                     this.motZ *= this.flyingZ;
-                    // CraftBukkit start
+                    // CraftBukkit end
                 }
             }
 
@@ -567,7 +567,7 @@ public class EntityMinecart extends Entity implements IInventory {
             }
             // CraftBukkit end
 
-            List list = this.world.b((Entity) this, this.boundingBox.b(0.20000000298023224D, 0.0D, 0.20000000298023224D));
+            List list = this.world.getEntities(this, this.boundingBox.grow(0.20000000298023224D, 0.0D, 0.20000000298023224D));
 
             if (list != null && list.size() > 0) {
                 for (int l1 = 0; l1 < list.size(); ++l1) {
@@ -725,14 +725,7 @@ public class EntityMinecart extends Entity implements IInventory {
                 }
 
                 if (entity instanceof EntityLiving && !(entity instanceof EntityHuman) && this.type == 0 && this.motX * this.motX + this.motZ * this.motZ > 0.01D && this.passenger == null && entity.vehicle == null) {
-                    if (!collisionEvent.isPickupCancelled()) {
-                        VehicleEnterEvent enterEvent = new VehicleEnterEvent(vehicle, hitEntity);
-                        this.world.getServer().getPluginManager().callEvent(enterEvent);
-
-                        if (!enterEvent.isCancelled()) {
-                            entity.mount(this);
-                        }
-                    }
+                    entity.mount(this);
                 }
                 // CraftBukkit end
 
@@ -755,8 +748,8 @@ public class EntityMinecart extends Entity implements IInventory {
                     d1 *= d3;
                     d0 *= 0.10000000149011612D;
                     d1 *= 0.10000000149011612D;
-                    d0 *= (double) (1.0F - this.bO);
-                    d1 *= (double) (1.0F - this.bO);
+                    d0 *= (double) (1.0F - this.bR);
+                    d1 *= (double) (1.0F - this.bR);
                     d0 *= 0.5D;
                     d1 *= 0.5D;
                     if (entity instanceof EntityMinecart) {
@@ -857,17 +850,6 @@ public class EntityMinecart extends Entity implements IInventory {
             }
 
             if (!this.world.isStatic) {
-                // CraftBukkit start
-                org.bukkit.entity.Entity player = (entityhuman == null) ? null : entityhuman.getBukkitEntity();
-
-                VehicleEnterEvent event = new VehicleEnterEvent((Vehicle) this.getBukkitEntity(), player);
-                this.world.getServer().getPluginManager().callEvent(event);
-
-                if (event.isCancelled()) {
-                    return true;
-                }
-                // CraftBukkit end
-
                 entityhuman.mount(this);
             }
         } else if (this.type == 1) {

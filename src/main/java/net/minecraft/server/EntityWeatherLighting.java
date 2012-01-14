@@ -73,8 +73,8 @@ public class EntityWeatherLighting extends EntityWeather {
         }
     }
 
-    public void w_() {
-        super.w_();
+    public void y_() {
+        super.y_();
         if (this.lifeTicks == 2) {
             this.world.makeSound(this.locX, this.locY, this.locZ, "ambient.weather.thunder", 10000.0F, 0.8F + this.random.nextFloat() * 0.2F);
             this.world.makeSound(this.locX, this.locY, this.locZ, "random.explode", 2.0F, 0.5F + this.random.nextFloat() * 0.2F);
@@ -110,7 +110,7 @@ public class EntityWeatherLighting extends EntityWeather {
 
         if (this.lifeTicks >= 0 && !this.isEffect) { // CraftBukkit
             double d0 = 3.0D;
-            List list = this.world.b((Entity) this, AxisAlignedBB.b(this.locX - d0, this.locY - d0, this.locZ - d0, this.locX + d0, this.locY + 6.0D + d0, this.locZ + d0));
+            List list = this.world.getEntities(this, AxisAlignedBB.b(this.locX - d0, this.locY - d0, this.locZ - d0, this.locX + d0, this.locY + 6.0D + d0, this.locZ + d0));
 
             for (int l = 0; l < list.size(); ++l) {
                 Entity entity = (Entity) list.get(l);

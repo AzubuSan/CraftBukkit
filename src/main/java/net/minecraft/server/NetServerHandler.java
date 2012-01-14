@@ -1,7 +1,9 @@
 package net.minecraft.server;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // CraftBukkit start
@@ -46,11 +48,12 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
     private long j;
     private static Random k = new Random();
     private long l;
+    private int m = 0;
     private double x;
     private double y;
     private double z;
     private boolean checkMovement = true;
-    private IntHashMap q = new IntHashMap();
+    private IntHashMap r = new IntHashMap();
 
     public NetServerHandler(MinecraftServer minecraftserver, NetworkManager networkmanager, EntityPlayer entityplayer) {
         this.minecraftServer = minecraftserver;
@@ -97,40 +100,42 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
             this.i = k.nextInt();
             this.sendPacket(new Packet0KeepAlive(this.i));
         }
+
+        if (this.m > 0) {
+            --this.m;
+        }
     }
 
     public void disconnect(String s) {
-        // CraftBukkit start
-        String leaveMessage = "\u00A7e" + this.player.name + " left the game.";
+        if (!this.disconnected) {
+            // CraftBukkit start
+            String leaveMessage = "\u00A7e" + this.player.name + " left the game.";
 
-        PlayerKickEvent event = new PlayerKickEvent(this.server.getPlayer(this.player), s, leaveMessage);
-        this.server.getPluginManager().callEvent(event);
+            PlayerKickEvent event = new PlayerKickEvent(this.server.getPlayer(this.player), s, leaveMessage);
+            this.server.getPluginManager().callEvent(event);
 
-        if (event.isCancelled()) {
-            // Do not kick the player
-            return;
+            if (event.isCancelled()) {
+                // Do not kick the player
+                return;
+            }
+            // Send the possibly modified leave message
+            s = event.getReason();
+            // CraftBukkit end
+
+            this.player.F();
+            this.sendPacket(new Packet255KickDisconnect(s));
+            this.networkManager.d();
+
+            // CraftBukkit start
+            leaveMessage = event.getLeaveMessage();
+            if (leaveMessage != null) {
+                this.minecraftServer.serverConfigurationManager.sendAll(new Packet3Chat(leaveMessage));
+            }
+            // CraftBukkit end
+
+            this.minecraftServer.serverConfigurationManager.disconnect(this.player);
+            this.disconnected = true;
         }
-        // Send the possibly modified leave message
-        s = event.getReason();
-        // CraftBukkit end
-
-        this.player.E();
-        this.sendPacket(new Packet255KickDisconnect(s));
-        this.networkManager.d();
-
-        // CraftBukkit start
-        leaveMessage = event.getLeaveMessage();
-        if (leaveMessage != null) {
-            this.minecraftServer.serverConfigurationManager.sendAll(new Packet3Chat(leaveMessage));
-        }
-        // CraftBukkit end
-
-        this.minecraftServer.serverConfigurationManager.disconnect(this.player);
-        this.disconnected = true;
-    }
-
-    public void a(Packet27PlayerInput packet27playerinput) {
-        this.player.a(packet27playerinput.c(), packet27playerinput.e(), packet27playerinput.g(), packet27playerinput.h(), packet27playerinput.d(), packet27playerinput.f());
     }
 
     public void a(Packet10Flying packet10flying) {
@@ -305,7 +310,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
                 }
 
                 this.player.a(true);
-                this.player.bL = 0.0F;
+                this.player.bO = 0.0F;
                 this.player.setLocation(this.x, this.y, this.z, f2, f3);
                 if (!this.checkMovement) {
                     return;
@@ -323,7 +328,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
                 }
 
                 float f4 = 0.0625F;
-                boolean flag = worldserver.getEntities(this.player, this.player.boundingBox.clone().shrink((double) f4, (double) f4, (double) f4)).size() == 0;
+                boolean flag = worldserver.a(this.player, this.player.boundingBox.clone().shrink((double) f4, (double) f4, (double) f4)).size() == 0;
 
                 if (this.player.onGround && !packet10flying.g && d6 > 0.0D) {
                     this.player.c(0.2F);
@@ -352,14 +357,14 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
                 }
 
                 this.player.setLocation(d1, d2, d3, f2, f3);
-                boolean flag2 = worldserver.getEntities(this.player, this.player.boundingBox.clone().shrink((double) f4, (double) f4, (double) f4)).size() == 0;
+                boolean flag2 = worldserver.a(this.player, this.player.boundingBox.clone().shrink((double) f4, (double) f4, (double) f4)).size() == 0;
 
                 if (flag && (flag1 || !flag2) && !this.player.isSleeping()) {
                     this.a(this.x, this.y, this.z, f2, f3);
                     return;
                 }
 
-                AxisAlignedBB axisalignedbb = this.player.boundingBox.clone().b((double) f4, (double) f4, (double) f4).a(0.0D, -0.55D, 0.0D);
+                AxisAlignedBB axisalignedbb = this.player.boundingBox.clone().grow((double) f4, (double) f4, (double) f4).a(0.0D, -0.55D, 0.0D);
 
                 if (!this.minecraftServer.allowFlight && !this.player.itemInWorldManager.b() && !worldserver.b(axisalignedbb)) {
                     if (d9 >= -0.03125D) {
@@ -452,9 +457,9 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
                 }
             }
             // CraftBukkit end
-            this.player.N();
+            this.player.O();
         } else if (packet14blockdig.e == 5) {
-            this.player.I();
+            this.player.J();
         } else {
             boolean flag = worldserver.weirdIsOpCache = worldserver.dimension != 0 || this.minecraftServer.serverConfigurationManager.isOp(this.player.name); // CraftBukkit
             boolean flag1 = false;
@@ -634,8 +639,8 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
 
             this.player.activeContainer.a();
             this.player.h = false;
-            // CraftBukkit | TODO CHECK IF NEEDED -- new if structure might not need 'always'. Kept it in for now, but may be able to remove in future
-            if (!ItemStack.equals(this.player.inventory.getItemInHand(), packet15place.itemstack) || always) {
+            // CraftBukkit - TODO CHECK IF NEEDED -- new if structure might not need 'always'. Kept it in for now, but may be able to remove in future
+            if (!ItemStack.matches(this.player.inventory.getItemInHand(), packet15place.itemstack) || always) {
                 this.sendPacket(new Packet103SetSlot(this.player.activeContainer.windowId, slot.c, this.player.inventory.getItemInHand()));
             }
         }
@@ -657,6 +662,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
     }
 
     public void a(Packet packet) {
+        if (this.disconnected) return; // CraftBukkit
         a.warning(this.getClass() + " wasn\'t prepared to deal with a " + packet.getClass());
         this.disconnect("Protocol error, unexpected packet");
     }
@@ -705,7 +711,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
             s = s.trim();
 
             for (int i = 0; i < s.length(); ++i) {
-                if (SharedConstants.allowedCharacters.indexOf(s.charAt(i)) < 0) {
+                if (SharedConstants.allowedCharacters.indexOf(s.charAt(i)) < 0 && s.charAt(i) < 32) {
                     this.disconnect("Illegal characters in chat");
                     return;
                 }
@@ -735,11 +741,16 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
                 for (Player recipient : event.getRecipients()) {
                     recipient.sendMessage(s);
                 }
+                // CraftBukkit end
+            }
+
+            this.m += 20;
+            if (this.m > 200) {
+                this.disconnect("disconnect.spam");
             }
         }
 
-        return false;
-        // CraftBukkit end
+        return false; // CraftBukkit
     }
 
     private void handleCommand(String s) {
@@ -832,7 +843,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
             if (event.isCancelled()) return;
             // CraftBukkit end
 
-            this.player.r_();
+            this.player.s_();
         }
     }
 
@@ -947,7 +958,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
     public void a(Packet101CloseWindow packet101closewindow) {
         if (this.player.dead) return; // CraftBukkit
 
-        this.player.D();
+        this.player.E();
     }
 
     public void a(Packet102WindowClick packet102windowclick) {
@@ -956,14 +967,14 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         if (this.player.activeContainer.windowId == packet102windowclick.a && this.player.activeContainer.c(this.player)) {
             ItemStack itemstack = this.player.activeContainer.a(packet102windowclick.b, packet102windowclick.c, packet102windowclick.f, this.player);
 
-            if (ItemStack.equals(packet102windowclick.e, itemstack)) {
+            if (ItemStack.matches(packet102windowclick.e, itemstack)) {
                 this.player.netServerHandler.sendPacket(new Packet106Transaction(packet102windowclick.a, packet102windowclick.d, true));
                 this.player.h = true;
                 this.player.activeContainer.a();
-                this.player.C();
+                this.player.D();
                 this.player.h = false;
             } else {
-                this.q.a(this.player.activeContainer.windowId, Short.valueOf(packet102windowclick.d));
+                this.r.a(this.player.activeContainer.windowId, Short.valueOf(packet102windowclick.d));
                 this.player.netServerHandler.sendPacket(new Packet106Transaction(packet102windowclick.a, packet102windowclick.d, false));
                 this.player.activeContainer.a(this.player, false);
                 ArrayList arraylist = new ArrayList();
@@ -1008,7 +1019,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
 
     public void a(Packet106Transaction packet106transaction) {
         if (this.player.dead) return; // CraftBukkit
-        Short oshort = (Short) this.q.a(this.player.activeContainer.windowId);
+        Short oshort = (Short) this.r.a(this.player.activeContainer.windowId);
 
         if (oshort != null && packet106transaction.b == oshort.shortValue() && this.player.activeContainer.windowId == packet106transaction.a && !this.player.activeContainer.c(this.player)) {
             this.player.activeContainer.a(this.player, true);
@@ -1071,7 +1082,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
                     for (int l = 0; l < 4; ++l) {
                         tileentitysign1.lines[l] = event.getLine(l);
                     }
-                    tileentitysign1.isEditable = true;
+                    tileentitysign1.isEditable = false;
                 }
                 // CraftBukkit end
 
@@ -1085,11 +1096,38 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         if (packet0keepalive.a == this.i) {
             int i = (int) (System.nanoTime() / 1000000L - this.j);
 
-            this.player.i = (this.player.i * 3 + i) / 4;
+            this.player.ping = (this.player.ping * 3 + i) / 4;
         }
     }
 
     public boolean c() {
         return true;
     }
+
+    // CraftBukkit start
+    @Override
+    public void a(Packet250CustomPayload packet) {
+        if (packet.tag.equals("REGISTER")) {
+            try {
+                String channels = new String(packet.data, "UTF8");
+                for (String channel : channels.split("\0")) {
+                    getPlayer().addChannel(channel);
+                }
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(NetServerHandler.class.getName()).log(Level.SEVERE, "Could not parse REGISTER payload in plugin message packet", ex);
+            }
+        } else if (packet.tag.equals("UNREGISTER")) {
+            try {
+                String channels = new String(packet.data, "UTF8");
+                for (String channel : channels.split("\0")) {
+                    getPlayer().removeChannel(channel);
+                }
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(NetServerHandler.class.getName()).log(Level.SEVERE, "Could not parse UNREGISTER payload in plugin message packet", ex);
+            }
+        } else {
+            server.getMessenger().dispatchIncomingMessage(player.getPlayer(), packet.tag, packet.data);
+        }
+    }
+    // CraftBukkit end
 }

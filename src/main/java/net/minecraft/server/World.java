@@ -83,7 +83,7 @@ public class World implements IBlockAccess {
     public boolean isStatic;
 
     public WorldChunkManager getWorldChunkManager() {
-        return this.worldProvider.b;
+        return this.worldProvider.c;
     }
 
     // CraftBukkit start
@@ -192,53 +192,57 @@ public class World implements IBlockAccess {
     }
 
     protected void c() {
-        this.isLoading = true;
-        WorldChunkManager worldchunkmanager = this.getWorldChunkManager();
-        List list = worldchunkmanager.a();
-        Random random = new Random(this.getSeed());
-        ChunkPosition chunkposition = worldchunkmanager.a(0, 0, 256, list, random);
-        int i = 0;
-        int j = this.height / 2;
-        int k = 0;
+        if (!this.worldProvider.c()) {
+            this.worldData.setSpawn(0, this.worldProvider.getSeaLevel(), 0);
+        } else {
+            this.isLoading = true;
+            WorldChunkManager worldchunkmanager = this.getWorldChunkManager();
+            List list = worldchunkmanager.a();
+            Random random = new Random(this.getSeed());
+            ChunkPosition chunkposition = worldchunkmanager.a(0, 0, 256, list, random);
+            int i = 0;
+            int j = this.worldProvider.getSeaLevel();
+            int k = 0;
 
-        // CraftBukkit start
-        if (this.generator != null) {
-            Random rand = new Random(this.getSeed());
-            Location spawn = this.generator.getFixedSpawnLocation(((WorldServer) this).getWorld(), rand);
+            // CraftBukkit start
+            if (this.generator != null) {
+                Random rand = new Random(this.getSeed());
+                Location spawn = this.generator.getFixedSpawnLocation(((WorldServer) this).getWorld(), rand);
 
-            if (spawn != null) {
-                if (spawn.getWorld() != ((WorldServer) this).getWorld()) {
-                    throw new IllegalStateException("Cannot set spawn point for " + this.worldData.name + " to be in another world (" + spawn.getWorld().getName() + ")");
-                } else {
-                    this.worldData.setSpawn(spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ());
-                    this.isLoading = false;
-                    return;
+                if (spawn != null) {
+                    if (spawn.getWorld() != ((WorldServer) this).getWorld()) {
+                        throw new IllegalStateException("Cannot set spawn point for " + this.worldData.name + " to be in another world (" + spawn.getWorld().getName() + ")");
+                    } else {
+                        this.worldData.setSpawn(spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ());
+                        this.isLoading = false;
+                        return;
+                    }
                 }
             }
-        }
-        // CraftBukkit end
+            // CraftBukkit end
 
-        if (chunkposition != null) {
-            i = chunkposition.x;
-            k = chunkposition.z;
-        } else {
-            System.out.println("Unable to find spawn biome");
-        }
-
-        int l = 0;
-
-        // CraftBukkit - use out own canSpawn
-        while (!this.canSpawn(i, k)) {
-            i += random.nextInt(64) - random.nextInt(64);
-            k += random.nextInt(64) - random.nextInt(64);
-            ++l;
-            if (l == 1000) {
-                break;
+            if (chunkposition != null) {
+                i = chunkposition.x;
+                k = chunkposition.z;
+            } else {
+                System.out.println("Unable to find spawn biome");
             }
-        }
 
-        this.worldData.setSpawn(i, j, k);
-        this.isLoading = false;
+            int l = 0;
+
+            // CraftBukkit - use out own canSpawn
+            while (!this.canSpawn(i, k)) {
+                i += random.nextInt(64) - random.nextInt(64);
+                k += random.nextInt(64) - random.nextInt(64);
+                ++l;
+                if (l == 1000) {
+                    break;
+                }
+            }
+
+            this.worldData.setSpawn(i, j, k);
+            this.isLoading = false;
+        }
     }
 
     public ChunkCoordinates d() {
@@ -472,7 +476,7 @@ public class World implements IBlockAccess {
             k = i1;
         }
 
-        if (!this.worldProvider.e) {
+        if (!this.worldProvider.f) {
             for (i1 = k; i1 <= l; ++i1) {
                 this.b(EnumSkyBlock.SKY, i, i1, j);
             }
@@ -652,7 +656,7 @@ public class World implements IBlockAccess {
     }
 
     public float m(int i, int j, int k) {
-        return this.worldProvider.f[this.getLightLevel(i, j, k)];
+        return this.worldProvider.g[this.getLightLevel(i, j, k)];
     }
 
     public boolean e() {
@@ -945,10 +949,10 @@ public class World implements IBlockAccess {
             this.everyoneSleeping();
         }
 
-        int i = entity.bX;
-        int j = entity.bZ;
+        int i = entity.ca;
+        int j = entity.cc;
 
-        if (entity.bW && this.isChunkLoaded(i, j)) {
+        if (entity.bZ && this.isChunkLoaded(i, j)) {
             this.getChunkAt(i, j).b(entity);
         }
 
@@ -960,7 +964,7 @@ public class World implements IBlockAccess {
         this.z.add(iworldaccess);
     }
 
-    public List getEntities(Entity entity, AxisAlignedBB axisalignedbb) {
+    public List a(Entity entity, AxisAlignedBB axisalignedbb) {
         this.R.clear();
         int i = MathHelper.floor(axisalignedbb.a);
         int j = MathHelper.floor(axisalignedbb.d + 1.0D);
@@ -984,7 +988,7 @@ public class World implements IBlockAccess {
         }
 
         double d0 = 0.25D;
-        List list = this.b(entity, axisalignedbb.b(d0, d0, d0));
+        List list = this.getEntities(entity, axisalignedbb.grow(d0, d0, d0));
 
         for (int j2 = 0; j2 < list.size(); ++j2) {
             AxisAlignedBB axisalignedbb1 = ((Entity) list.get(j2)).h_();
@@ -1086,8 +1090,8 @@ public class World implements IBlockAccess {
     }
 
     public void tickEntities() {
-        // MethodProfiler.a("entities"); // CraftBukkit -- not in production code
-        // MethodProfiler.a("global"); // CraftBukkit -- not in production code
+        // MethodProfiler.a("entities"); // CraftBukkit - not in production code
+        // MethodProfiler.a("global"); // CraftBukkit - not in production code
 
         int i;
         Entity entity;
@@ -1099,13 +1103,13 @@ public class World implements IBlockAccess {
                 continue;
             }
             // CraftBukkit end
-            entity.w_();
+            entity.y_();
             if (entity.dead) {
                 this.j.remove(i--);
             }
         }
 
-        // MethodProfiler.b("remove"); // CraftBukkit -- not in production code
+        // MethodProfiler.b("remove"); // CraftBukkit - not in production code
         this.entityList.removeAll(this.J);
 
         int j;
@@ -1113,9 +1117,9 @@ public class World implements IBlockAccess {
 
         for (i = 0; i < this.J.size(); ++i) {
             entity = (Entity) this.J.get(i);
-            j = entity.bX;
-            k = entity.bZ;
-            if (entity.bW && this.isChunkLoaded(j, k)) {
+            j = entity.ca;
+            k = entity.cc;
+            if (entity.bZ && this.isChunkLoaded(j, k)) {
                 this.getChunkAt(j, k).b(entity);
             }
         }
@@ -1125,7 +1129,7 @@ public class World implements IBlockAccess {
         }
 
         this.J.clear();
-        // MethodProfiler.b("regular"); // CraftBukkit -- not in production code
+        // MethodProfiler.b("regular"); // CraftBukkit - not in production code
 
         for (i = 0; i < this.entityList.size(); ++i) {
             entity = (Entity) this.entityList.get(i);
@@ -1142,11 +1146,11 @@ public class World implements IBlockAccess {
                 this.playerJoinedWorld(entity);
             }
 
-            // MethodProfiler.a("remove"); // CraftBukkit -- not in production code
+            // MethodProfiler.a("remove"); // CraftBukkit - not in production code
             if (entity.dead) {
-                j = entity.bX;
-                k = entity.bZ;
-                if (entity.bW && this.isChunkLoaded(j, k)) {
+                j = entity.ca;
+                k = entity.cc;
+                if (entity.bZ && this.isChunkLoaded(j, k)) {
                     this.getChunkAt(j, k).b(entity);
                 }
 
@@ -1154,10 +1158,10 @@ public class World implements IBlockAccess {
                 this.d(entity);
             }
 
-            // MethodProfiler.a(); // CraftBukkit -- not in production code
+            // MethodProfiler.a(); // CraftBukkit - not in production code
         }
 
-        // MethodProfiler.b("tileEntities"); // CraftBukkit -- not in production code
+        // MethodProfiler.b("tileEntities"); // CraftBukkit - not in production code
         this.S = true;
         Iterator iterator = this.h.iterator();
 
@@ -1186,7 +1190,7 @@ public class World implements IBlockAccess {
             this.N.clear();
         }
 
-        // MethodProfiler.b("pendingTileEntities"); // CraftBukkit -- not in production code
+        // MethodProfiler.b("pendingTileEntities"); // CraftBukkit - not in production code
         if (!this.M.isEmpty()) {
             Iterator iterator1 = this.M.iterator();
 
@@ -1219,8 +1223,8 @@ public class World implements IBlockAccess {
             this.M.clear();
         }
 
-        // MethodProfiler.a(); // CraftBukkit -- not in production code
-        // MethodProfiler.a(); // CraftBukkit -- not in production code
+        // MethodProfiler.a(); // CraftBukkit - not in production code
+        // MethodProfiler.a(); // CraftBukkit - not in production code
     }
 
     public void a(Collection collection) {
@@ -1241,30 +1245,30 @@ public class World implements IBlockAccess {
         byte b0 = 32;
 
         if (!flag || this.a(i - b0, 0, j - b0, i + b0, this.height, j + b0)) {
-            entity.bI = entity.locX;
-            entity.bJ = entity.locY;
-            entity.bK = entity.locZ;
+            entity.bL = entity.locX;
+            entity.bM = entity.locY;
+            entity.bN = entity.locZ;
             entity.lastYaw = entity.yaw;
             entity.lastPitch = entity.pitch;
-            if (flag && entity.bW) {
+            if (flag && entity.bZ) {
                 if (entity.vehicle != null) {
-                    entity.M();
+                    entity.N();
                 } else {
-                    entity.w_();
+                    entity.y_();
                 }
             }
 
-            // MethodProfiler.a("chunkCheck"); // CraftBukkit -- not in production code
+            // MethodProfiler.a("chunkCheck"); // CraftBukkit - not in production code
             if (Double.isNaN(entity.locX) || Double.isInfinite(entity.locX)) {
-                entity.locX = entity.bI;
+                entity.locX = entity.bL;
             }
 
             if (Double.isNaN(entity.locY) || Double.isInfinite(entity.locY)) {
-                entity.locY = entity.bJ;
+                entity.locY = entity.bM;
             }
 
             if (Double.isNaN(entity.locZ) || Double.isInfinite(entity.locZ)) {
-                entity.locZ = entity.bK;
+                entity.locZ = entity.bN;
             }
 
             if (Double.isNaN((double) entity.pitch) || Double.isInfinite((double) entity.pitch)) {
@@ -1279,21 +1283,21 @@ public class World implements IBlockAccess {
             int l = MathHelper.floor(entity.locY / 16.0D);
             int i1 = MathHelper.floor(entity.locZ / 16.0D);
 
-            if (!entity.bW || entity.bX != k || entity.bY != l || entity.bZ != i1) {
-                if (entity.bW && this.isChunkLoaded(entity.bX, entity.bZ)) {
-                    this.getChunkAt(entity.bX, entity.bZ).a(entity, entity.bY);
+            if (!entity.bZ || entity.ca != k || entity.cb != l || entity.cc != i1) {
+                if (entity.bZ && this.isChunkLoaded(entity.ca, entity.cc)) {
+                    this.getChunkAt(entity.ca, entity.cc).a(entity, entity.cb);
                 }
 
                 if (this.isChunkLoaded(k, i1)) {
-                    entity.bW = true;
+                    entity.bZ = true;
                     this.getChunkAt(k, i1).a(entity);
                 } else {
-                    entity.bW = false;
+                    entity.bZ = false;
                 }
             }
 
-            // MethodProfiler.a(); // CraftBukkit -- not in production code
-            if (flag && entity.bW && entity.passenger != null) {
+            // MethodProfiler.a(); // CraftBukkit - not in production code
+            if (flag && entity.bZ && entity.passenger != null) {
                 if (!entity.passenger.dead && entity.passenger.vehicle == entity) {
                     this.playerJoinedWorld(entity.passenger);
                 } else {
@@ -1305,12 +1309,12 @@ public class World implements IBlockAccess {
     }
 
     public boolean containsEntity(AxisAlignedBB axisalignedbb) {
-        List list = this.b((Entity) null, axisalignedbb);
+        List list = this.getEntities((Entity) null, axisalignedbb);
 
         for (int i = 0; i < list.size(); ++i) {
             Entity entity = (Entity) list.get(i);
 
-            if (!entity.dead && entity.bc) {
+            if (!entity.dead && entity.bf) {
                 return false;
             }
         }
@@ -1715,13 +1719,13 @@ public class World implements IBlockAccess {
             }
         }
 
-        // MethodProfiler.a("mobSpawner"); // CraftBukkit -- not in production code
+        // MethodProfiler.a("mobSpawner"); // CraftBukkit - not in production code
         // CraftBukkit start - Only call spawner if we have players online and the world allows for mobs or animals
         if ((this.allowMonsters || this.allowAnimals) && (this instanceof WorldServer && this.getServer().getHandle().players.size() > 0)) {
             SpawnerCreature.spawnEntities(this, this.allowMonsters, this.allowAnimals && this.worldData.f() % 400L == 0L);
         }
         // CraftBukkit end
-        // MethodProfiler.b("chunkSource"); // CraftBukkit -- not in production code
+        // MethodProfiler.b("chunkSource"); // CraftBukkit - not in production code
         this.chunkProvider.unloadChunks();
         int j = this.a(1.0F);
 
@@ -1731,16 +1735,16 @@ public class World implements IBlockAccess {
 
         i = this.worldData.f() + 1L;
         if (i % (long) this.u == 0L) {
-            // MethodProfiler.b("save"); // CraftBukkit -- not in production code
+            // MethodProfiler.b("save"); // CraftBukkit - not in production code
             this.save(false, (IProgressUpdate) null);
         }
 
         this.worldData.a(i);
-        // MethodProfiler.b("tickPending"); // CraftBukkit -- not in production code
+        // MethodProfiler.b("tickPending"); // CraftBukkit - not in production code
         this.a(false);
-        // MethodProfiler.b("tickTiles"); // CraftBukkit -- not in production code
+        // MethodProfiler.b("tickTiles"); // CraftBukkit - not in production code
         this.k();
-        // MethodProfiler.a(); // CraftBukkit -- not in production code
+        // MethodProfiler.a(); // CraftBukkit - not in production code
     }
 
     private void z() {
@@ -1753,7 +1757,7 @@ public class World implements IBlockAccess {
     }
 
     protected void i() {
-        if (!this.worldProvider.e) {
+        if (!this.worldProvider.f) {
             if (this.r > 0) {
                 --this.r;
             }
@@ -1858,8 +1862,8 @@ public class World implements IBlockAccess {
     }
 
     protected void k() {
-        // this.T.clear(); // CraftBukkit -- removed
-        // MethodProfiler.a("buildList"); // CraftBukkit -- not in production code
+        // this.T.clear(); // CraftBukkit - removed
+        // MethodProfiler.a("buildList"); // CraftBukkit - not in production code
 
         int i;
         int j;
@@ -1884,8 +1888,8 @@ public class World implements IBlockAccess {
         i = 0;
         int j1 = 0;
 
-        // MethodProfiler.a(); // CraftBukkit -- not in production code
-        // Iterator iterator = this.T.iterator(); CraftBukkit == removed
+        // MethodProfiler.a(); // CraftBukkit - not in production code
+        // Iterator iterator = this.T.iterator(); // CraftBukkit - removed
 
         // CraftBukkit start
         for (long chunkCoord : this.T.popAll()) {
@@ -1895,13 +1899,13 @@ public class World implements IBlockAccess {
             int k1 = chunkX * 16;
 
             j = chunkZ * 16;
-            // MethodProfiler.a("getChunk"); // CraftBukkit -- not in production code
+            // MethodProfiler.a("getChunk"); // CraftBukkit - not in production code
             Chunk chunk = this.getChunkAt(chunkX, chunkZ);
             // CraftBukkit end
 
-            // MethodProfiler.b("tickChunk"); // CraftBukkit -- not in production code
+            // MethodProfiler.b("tickChunk"); // CraftBukkit - not in production code
             chunk.i();
-            // MethodProfiler.b("moodSound"); // CraftBukkit -- not in production code
+            // MethodProfiler.b("moodSound"); // CraftBukkit - not in production code
             int l1;
             int i2;
             int j2;
@@ -1927,7 +1931,7 @@ public class World implements IBlockAccess {
                 }
             }
 
-            // MethodProfiler.b("thunder"); // CraftBukkit -- not in production code
+            // MethodProfiler.b("thunder"); // CraftBukkit - not in production code
             if (this.random.nextInt(100000) == 0 && this.w() && this.v()) {
                 this.l = this.l * 3 + 1013904223;
                 l1 = this.l >> 2;
@@ -1940,41 +1944,43 @@ public class World implements IBlockAccess {
                 }
             }
 
-            // MethodProfiler.b("iceandsnow"); // CraftBukkit -- not in production code
-            this.l = this.l * 3 + 1013904223;
-            l1 = this.l >> 2;
-            i2 = l1 & 15;
-            j2 = l1 >> 8 & 15;
-            k2 = this.e(i2 + k1, j2 + j);
-            if (this.q(i2 + k1, k2 - 1, j2 + j)) {
-                // CraftBukkit start
-                BlockState blockState = this.getWorld().getBlockAt(i2 + k1, k2 - 1, j2 + j).getState();
-                blockState.setTypeId(Block.ICE.id);
+            // MethodProfiler.b("iceandsnow"); // CraftBukkit - not in production code
+            if (this.random.nextInt(16) == 0) {
+                this.l = this.l * 3 + 1013904223;
+                l1 = this.l >> 2;
+                i2 = l1 & 15;
+                j2 = l1 >> 8 & 15;
+                k2 = this.e(i2 + k1, j2 + j);
+                if (this.q(i2 + k1, k2 - 1, j2 + j)) {
+                    // CraftBukkit start
+                    BlockState blockState = this.getWorld().getBlockAt(i2 + k1, k2 - 1, j2 + j).getState();
+                    blockState.setTypeId(Block.ICE.id);
 
-                BlockFormEvent iceBlockForm = new BlockFormEvent(blockState.getBlock(), blockState);
-                this.getServer().getPluginManager().callEvent(iceBlockForm);
-                if (!iceBlockForm.isCancelled()) {
-                    blockState.update(true);
+                    BlockFormEvent iceBlockForm = new BlockFormEvent(blockState.getBlock(), blockState);
+                    this.getServer().getPluginManager().callEvent(iceBlockForm);
+                    if (!iceBlockForm.isCancelled()) {
+                        blockState.update(true);
+                    }
+                    // CraftBukkit end
                 }
-                // CraftBukkit end
+
+                if (this.w() && this.r(i2 + k1, k2, j2 + j)) {
+                    // CraftBukkit start
+                    BlockState blockState = this.getWorld().getBlockAt(i2 + k1, k2, j2 + j).getState();
+                    blockState.setTypeId(Block.SNOW.id);
+
+                    BlockFormEvent snow = new BlockFormEvent(blockState.getBlock(), blockState);
+                    this.getServer().getPluginManager().callEvent(snow);
+                    if (!snow.isCancelled()) {
+                        blockState.update(true);
+                    }
+                    // CraftBukkit end
+                }
             }
 
-            if (this.w() && this.r(i2 + k1, k2, j2 + j)) {
-                // CraftBukkit start
-                BlockState blockState = this.getWorld().getBlockAt(i2 + k1, k2, j2 + j).getState();
-                blockState.setTypeId(Block.SNOW.id);
-
-                BlockFormEvent snow = new BlockFormEvent(blockState.getBlock(), blockState);
-                this.getServer().getPluginManager().callEvent(snow);
-                if (!snow.isCancelled()) {
-                    blockState.update(true);
-                }
-                // CraftBukkit end
-            }
-
-            // MethodProfiler.b("checkLight"); // CraftBukkit -- not in production code
+            // MethodProfiler.b("checkLight"); // CraftBukkit - not in production code
             this.s(k1 + this.random.nextInt(16), this.random.nextInt(this.height), j + this.random.nextInt(16));
-            // MethodProfiler.b("tickTiles"); // CraftBukkit -- not in production code
+            // MethodProfiler.b("tickTiles"); // CraftBukkit - not in production code
 
             for (l1 = 0; l1 < 20; ++l1) {
                 this.l = this.l * 3 + 1013904223;
@@ -1991,7 +1997,7 @@ public class World implements IBlockAccess {
                 }
             }
 
-            // MethodProfiler.a(); // CraftBukkit -- not in production code
+            // MethodProfiler.a(); // CraftBukkit - not in production code
         }
     }
 
@@ -2065,7 +2071,7 @@ public class World implements IBlockAccess {
     }
 
     public void s(int i, int j, int k) {
-        if (!this.worldProvider.e) {
+        if (!this.worldProvider.f) {
             this.b(EnumSkyBlock.SKY, i, j, k);
         }
 
@@ -2356,7 +2362,7 @@ public class World implements IBlockAccess {
         return arraylist;
     }
 
-    public List b(Entity entity, AxisAlignedBB axisalignedbb) {
+    public List getEntities(Entity entity, AxisAlignedBB axisalignedbb) {
         this.V.clear();
         int i = MathHelper.floor((axisalignedbb.a - 2.0D) / 16.0D);
         int j = MathHelper.floor((axisalignedbb.d + 2.0D) / 16.0D);
@@ -2421,11 +2427,9 @@ public class World implements IBlockAccess {
         Entity entity = null;
         for (int i = 0; i < list.size(); ++i) {
             entity = (Entity) list.get(i);
-            // CraftBukkit start - fixed an NPE
             if (entity == null) {
                 continue;
             }
-            // CraftBukkit end
             this.entityList.add(entity);
             // CraftBukkit end
             this.c((Entity) list.get(i));
@@ -2467,7 +2471,7 @@ public class World implements IBlockAccess {
     }
 
     public PathEntity findPath(Entity entity, Entity entity1, float f) {
-        // MethodProfiler.a("pathfind"); // CraftBukkit -- not in production code
+        // MethodProfiler.a("pathfind"); // CraftBukkit - not in production code
         int i = MathHelper.floor(entity.locX);
         int j = MathHelper.floor(entity.locY);
         int k = MathHelper.floor(entity.locZ);
@@ -2481,12 +2485,12 @@ public class World implements IBlockAccess {
         ChunkCache chunkcache = new ChunkCache(this, i1, j1, k1, l1, i2, j2);
         PathEntity pathentity = (new Pathfinder(chunkcache)).a(entity, entity1, f);
 
-        // MethodProfiler.a(); // CraftBukkit -- not in production code
+        // MethodProfiler.a(); // CraftBukkit - not in production code
         return pathentity;
     }
 
     public PathEntity a(Entity entity, int i, int j, int k, float f) {
-        // MethodProfiler.a("pathfind"); // CraftBukkit -- not in production code
+        // MethodProfiler.a("pathfind"); // CraftBukkit - not in production code
         int l = MathHelper.floor(entity.locX);
         int i1 = MathHelper.floor(entity.locY);
         int j1 = MathHelper.floor(entity.locZ);
@@ -2500,7 +2504,7 @@ public class World implements IBlockAccess {
         ChunkCache chunkcache = new ChunkCache(this, l1, i2, j2, k2, l2, i3);
         PathEntity pathentity = (new Pathfinder(chunkcache)).a(entity, i, j, k, f);
 
-        // MethodProfiler.a(); // CraftBukkit -- not in production code
+        // MethodProfiler.a(); // CraftBukkit - not in production code
         return pathentity;
     }
 
@@ -2564,6 +2568,9 @@ public class World implements IBlockAccess {
 
         for (int i = 0; i < this.players.size(); ++i) {
             EntityHuman entityhuman1 = (EntityHuman) this.players.get(i);
+
+            // CraftBukkit - fixed NPE
+            if (entityhuman1 == null || entityhuman1.dead) continue;
 
             if (!entityhuman1.abilities.isInvulnerable) {
                 double d5 = entityhuman1.e(d0, d1, d2);
@@ -2799,7 +2806,7 @@ public class World implements IBlockAccess {
     }
 
     public WorldMapBase a(Class oclass, String s) {
-        return this.worldMaps.a(oclass, s);
+        return this.worldMaps.get(oclass, s);
     }
 
     public int b(String s) {
@@ -2830,13 +2837,13 @@ public class World implements IBlockAccess {
     public void a(EnumSkyBlock enumskyblock, int i, int j, int k, int l, int i1, int j1) {}
 
     public BiomeMeta a(EnumCreatureType enumcreaturetype, int i, int j, int k) {
-        List list = this.p().a(enumcreaturetype, i, j, k);
+        List list = this.p().getMobsFor(enumcreaturetype, i, j, k);
 
         return list != null && !list.isEmpty() ? (BiomeMeta) WeightedRandom.a(this.random, (Collection) list) : null;
     }
 
     public ChunkPosition b(String s, int i, int j, int k) {
-        return this.p().a(this, s, i, j, k);
+        return this.p().findNearestMapFeature(this, s, i, j, k);
     }
 
     // CraftBukkit start
