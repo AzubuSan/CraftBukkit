@@ -391,4 +391,10 @@ public class CraftEventFactory {
 
         return event;
     }
+
+    public static PlayerLevelChangeEvent callPlayerLevelChangeEvent(Player player, int oldLevel, int newLevel) {
+        PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(player, oldLevel, newLevel);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
 }
