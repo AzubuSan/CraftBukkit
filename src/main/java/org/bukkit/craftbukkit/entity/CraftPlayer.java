@@ -519,6 +519,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         }
     }
 
+    public int getExpToLevel() {
+        return getHandle().getExpToLevel();
+    }
+
     public float getExhaustion() {
         return getHandle().getFoodData().exhaustionLevel;
     }
