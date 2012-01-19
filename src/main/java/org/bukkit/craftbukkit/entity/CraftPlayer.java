@@ -479,6 +479,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         getHandle().giveExp(exp);
     }
 
+    public void takeExp(int exp) {
+        getHandle().takeExp(exp);
+    }
+
     public float getExp() {
         return getHandle().exp;
     }

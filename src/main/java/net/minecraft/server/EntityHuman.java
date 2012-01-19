@@ -1194,6 +1194,13 @@ public abstract class EntityHuman extends EntityLiving {
     }
 
     public void giveExp(int i) {
+        // CraftBukkit start
+        if (i < 0) {
+            takeExp(i*-1);
+            return;
+        }
+        // CraftBukkit end
+
         this.q += i;
         int j = Integer.MAX_VALUE - this.expTotal;
 
@@ -1208,6 +1215,28 @@ public abstract class EntityHuman extends EntityLiving {
             this.levelUp();
         }
     }
+
+    // CraftBukkit start - This is broken!
+    public void takeExp(int i) {
+        if(i < 0) {
+            giveExp(i*-1);
+            return;
+        }
+
+        this.q -= i;
+
+        if (i > this.expTotal) {
+            i = this.expTotal;
+        }
+
+        this.exp -= (float) i * (float) this.getExpToLevel();
+
+        for (this.expTotal -= i; this.exp < 0.0F; this.exp *= (float) this.getExpToLevel()) { // Forever loop!
+            this.exp = (this.exp + 1.0F) * (float) this.getExpToLevel();
+            this.levelDown(1);
+        }
+    }
+    // CraftBukkit end
 
     public void levelDown(int i) {
         this.expLevel -= i;
