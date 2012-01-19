@@ -397,4 +397,11 @@ public class CraftEventFactory {
         Bukkit.getPluginManager().callEvent(event);
         return event;
     }
+
+    public static PlayerExpChangeEvent callPlayerExpChangeEvent(EntityHuman entity, int expAmount) {
+        Player player = (Player) entity.getBukkitEntity();
+        PlayerExpChangeEvent event = new PlayerExpChangeEvent(player, expAmount);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
 }
