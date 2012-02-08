@@ -201,20 +201,17 @@ public class EntityArrow extends Entity {
 
                     // CraftBukkit start
                     boolean stick;
-                    if (entity instanceof EntityLiving) {
+                    org.bukkit.entity.Entity damagee = movingobjectposition.entity.getBukkitEntity();
+                    Projectile projectile = (Projectile) this.getBukkitEntity();
 
-                        org.bukkit.entity.Entity damagee = movingobjectposition.entity.getBukkitEntity();
-                        Projectile projectile = (Projectile) this.getBukkitEntity();
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(projectile, damagee, EntityDamageEvent.DamageCause.PROJECTILE, l);
+                    Bukkit.getPluginManager().callEvent(event);
 
-                        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(projectile, damagee, EntityDamageEvent.DamageCause.PROJECTILE, l);
-                        Bukkit.getPluginManager().callEvent(event);
-
-                        if (event.isCancelled()) {
-                            stick = !projectile.doesBounce();
-                        } else {
-                            // this function returns if the arrow should stick in or not, i.e. !bounce
-                            stick = movingobjectposition.entity.damageEntity(damagesource, event.getDamage());
-                        }
+                    if (event.isCancelled()) {
+                        stick = !projectile.doesBounce();
+                    } else if (entity instanceof EntityLiving) {
+                        // this function returns if the arrow should stick in or not, i.e. !bounce
+                        stick = movingobjectposition.entity.damageEntity(damagesource, event.getDamage());
                     } else {
                         stick = movingobjectposition.entity.damageEntity(damagesource, l);
                     }
