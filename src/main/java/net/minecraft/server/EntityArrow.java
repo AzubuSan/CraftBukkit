@@ -209,11 +209,9 @@ public class EntityArrow extends Entity {
 
                     if (event.isCancelled()) {
                         stick = !projectile.doesBounce();
-                    } else if (entity instanceof EntityLiving) {
+                    } else {
                         // this function returns if the arrow should stick in or not, i.e. !bounce
                         stick = movingobjectposition.entity.damageEntity(damagesource, event.getDamage());
-                    } else {
-                        stick = movingobjectposition.entity.damageEntity(damagesource, l);
                     }
                     if (stick) {
                         // CraftBukkit end
