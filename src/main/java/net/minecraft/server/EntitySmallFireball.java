@@ -36,8 +36,7 @@ public class EntitySmallFireball extends EntityFireball {
                     boolean stick;
                     org.bukkit.entity.Entity damagee = movingEntity.getBukkitEntity();
                     Projectile projectile = (Projectile) this.getBukkitEntity();
-                    if (movingEntity instanceof EntityLiving) {
-
+                    if (movingEntity instanceof EntityLiving || movingEntity instanceof EntityComplexPart) {
                         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(projectile, damagee, EntityDamageEvent.DamageCause.PROJECTILE, 5);
                         pluginManager.callEvent(event);
 

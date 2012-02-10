@@ -34,20 +34,19 @@ public class EntitySnowball extends EntityProjectile {
             boolean stick = false;
 
             if (movingEntity != null) {
-                if (movingEntity instanceof EntityLiving) {
+                if (movingEntity instanceof EntityLiving || movingEntity instanceof EntityComplexPart) {
                     org.bukkit.entity.Entity damagee = movingEntity.getBukkitEntity();
                     Projectile projectile = (Projectile) this.getBukkitEntity();
 
                     EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(projectile, damagee, EntityDamageEvent.DamageCause.PROJECTILE, b0);
                     Bukkit.getPluginManager().callEvent(event);
                     this.shooter = (projectile.getShooter() == null) ? null : ((CraftLivingEntity) projectile.getShooter()).getHandle();
-                    b0 = event.getDamage();
 
                     if (event.isCancelled()) {
                         stick = !projectile.doesBounce();
                     } else {
                         // this function returns if the snowball should stick in or not, i.e. !bounce
-                        stick = movingEntity.damageEntity(DamageSource.projectile(this, this.shooter), b0);
+                        stick = movingEntity.damageEntity(DamageSource.projectile(this, this.shooter), event.getDamage());
                     }
                 } else {
                     stick = movingEntity.damageEntity(DamageSource.projectile(this, this.shooter), b0);

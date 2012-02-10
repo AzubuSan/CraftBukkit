@@ -201,18 +201,24 @@ public class EntityArrow extends Entity {
 
                     // CraftBukkit start
                     boolean stick;
-                    org.bukkit.entity.Entity damagee = movingobjectposition.entity.getBukkitEntity();
-                    Projectile projectile = (Projectile) this.getBukkitEntity();
 
-                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(projectile, damagee, EntityDamageEvent.DamageCause.PROJECTILE, l);
-                    Bukkit.getPluginManager().callEvent(event);
+                    if (movingobjectposition.entity instanceof EntityLiving || movingobjectposition.entity instanceof EntityComplexPart) {
+                        org.bukkit.entity.Entity damagee = movingobjectposition.entity.getBukkitEntity();
+                        Projectile projectile = (Projectile) this.getBukkitEntity();
 
-                    if (event.isCancelled()) {
-                        stick = !projectile.doesBounce();
+                        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(projectile, damagee, EntityDamageEvent.DamageCause.PROJECTILE, l);
+                        Bukkit.getPluginManager().callEvent(event);
+
+                        if (event.isCancelled()) {
+                            stick = !projectile.doesBounce();
+                        } else {
+                            // this function returns if the arrow should stick in or not, i.e. !bounce
+                            stick = movingobjectposition.entity.damageEntity(damagesource, event.getDamage());
+                        }
                     } else {
-                        // this function returns if the arrow should stick in or not, i.e. !bounce
-                        stick = movingobjectposition.entity.damageEntity(damagesource, event.getDamage());
+                        stick = movingobjectposition.entity.damageEntity(damagesource, l);
                     }
+
                     if (stick) {
                         // CraftBukkit end
                         if (movingobjectposition.entity instanceof EntityLiving) {

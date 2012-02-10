@@ -192,7 +192,7 @@ public class EntityFishingHook extends Entity {
                 if (movingobjectposition.entity != null) {
                     // CraftBukkit start
                     boolean stick;
-                    if (movingobjectposition.entity instanceof EntityLiving) {
+                    if (movingobjectposition.entity instanceof EntityLiving || movingobjectposition.entity instanceof EntityComplexPart) {
                         org.bukkit.entity.Entity damagee = movingobjectposition.entity.getBukkitEntity();
                         Projectile projectile = (Projectile) this.getBukkitEntity();
 
@@ -208,6 +208,7 @@ public class EntityFishingHook extends Entity {
                     } else {
                         stick = movingobjectposition.entity.damageEntity(DamageSource.projectile(this, this.owner), 0);
                     }
+
                     if (!stick) {
                         // CraftBukkit end
                         this.hooked = movingobjectposition.entity;

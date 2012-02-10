@@ -29,7 +29,7 @@ public class EntityEgg extends EntityProjectile {
         // CraftBukkit start
         if (movingobjectposition.entity != null) {
             boolean stick;
-            if (movingobjectposition.entity instanceof EntityLiving) {
+            if (movingobjectposition.entity instanceof EntityLiving || movingobjectposition.entity instanceof EntityComplexPart) {
                 org.bukkit.entity.Entity damagee = movingobjectposition.entity.getBukkitEntity();
                 Projectile projectile = (Projectile) this.getBukkitEntity();
 
