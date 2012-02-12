@@ -28,8 +28,15 @@ public class BlockStem extends BlockFlower {
                 int l = world.getData(i, j, k);
 
                 if (l < 7) {
-                    ++l;
-                    world.setData(i, j, k, l);
+                    // CraftBukkit start
+                    org.bukkit.block.Block block = world.getWorld().getBlockAt(i, j, k);
+                    org.bukkit.block.BlockState state = block.getState();
+                    state.setTypeId(++l);
+
+                    if (!org.bukkit.craftbukkit.event.CraftEventFactory.callBlockGrowEvent(block).isCancelled()) {
+                        state.update(true);
+                    }
+                    // CraftBukkit end
                 } else {
                     if (world.getTypeId(i - 1, j, k) == this.a.id) {
                         return;
@@ -70,7 +77,15 @@ public class BlockStem extends BlockFlower {
                     int l1 = world.getTypeId(j1, j - 1, k1);
 
                     if (world.getTypeId(j1, j, k1) == 0 && (l1 == Block.SOIL.id || l1 == Block.DIRT.id || l1 == Block.GRASS.id)) {
-                        world.setTypeId(j1, j, k1, this.a.id);
+                        // CraftBukkit start
+                        org.bukkit.block.Block block = world.getWorld().getBlockAt(j1, j, k1);
+                        org.bukkit.block.BlockState state = block.getState();
+                        state.setTypeId(this.a.id);
+
+                        if (!org.bukkit.craftbukkit.event.CraftEventFactory.callBlockGrowEvent(block).isCancelled()) {
+                            state.update(true);
+                        }
+                        // CraftBukkit end
                     }
                 }
             }

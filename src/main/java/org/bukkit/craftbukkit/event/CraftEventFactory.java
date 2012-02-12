@@ -438,4 +438,10 @@ public class CraftEventFactory {
 
         return !projectile.doesBounce();
     }
+
+    public static BlockGrowEvent callBlockGrowEvent(org.bukkit.block.Block block) {
+        BlockGrowEvent event = new BlockGrowEvent(block);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
 }
