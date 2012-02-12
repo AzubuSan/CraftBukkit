@@ -23,12 +23,11 @@ import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Vehicle;
 // CraftBukkit end
 
 public class World implements IBlockAccess {
@@ -889,14 +888,15 @@ public class World implements IBlockAccess {
                 if (isAnimal && !allowAnimals || isMonster && !allowMonsters) return false;
             }
 
-            CreatureSpawnEvent event = CraftEventFactory.callCreatureSpawnEvent((EntityLiving) entity, spawnReason);
-
-            if (event.isCancelled()) {
+            if (CraftEventFactory.callCreatureSpawnEvent((EntityLiving) entity, spawnReason).isCancelled()) {
                 return false;
             }
         } else if (entity instanceof EntityItem) {
-            ItemSpawnEvent event = CraftEventFactory.callItemSpawnEvent((EntityItem) entity);
-            if (event.isCancelled()) {
+            if (CraftEventFactory.callItemSpawnEvent((EntityItem) entity).isCancelled()) {
+                return false;
+            }
+        } else if (!(entity instanceof EntityPlayer || entity.getBukkitEntity() instanceof Vehicle || entity instanceof EntityPainting)) {
+            if (CraftEventFactory.callEntitySpawnEvent(entity).isCancelled()) {
                 return false;
             }
         }

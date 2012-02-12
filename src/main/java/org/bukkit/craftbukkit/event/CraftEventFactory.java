@@ -438,4 +438,11 @@ public class CraftEventFactory {
 
         return !projectile.doesBounce();
     }
+
+    public static EntitySpawnEvent callEntitySpawnEvent(Entity entity) {
+        org.bukkit.entity.Entity e = entity.getBukkitEntity();
+        EntitySpawnEvent event = new EntitySpawnEvent(e, e.getLocation());
+        e.getServer().getPluginManager().callEvent(event);
+        return event;
+    }
 }
