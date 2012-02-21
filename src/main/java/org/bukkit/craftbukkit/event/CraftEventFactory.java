@@ -424,7 +424,7 @@ public class CraftEventFactory {
     public static boolean handleProjectileEvent(Projectile projectile, Entity target, DamageSource damagesource, int damage) {
         if (target instanceof EntityLiving || target instanceof EntityComplexPart || target instanceof EntityEnderCrystal) {
             org.bukkit.entity.Entity damagee = target.getBukkitEntity();
-            
+
             EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(projectile, damagee, EntityDamageEvent.DamageCause.PROJECTILE, damage);
             Bukkit.getPluginManager().callEvent(event);
 
@@ -439,9 +439,16 @@ public class CraftEventFactory {
         return !projectile.doesBounce();
     }
 
-    public static BlockGrowEvent callBlockGrowEvent(org.bukkit.block.Block block) {
+    public static void handleBlockGrowEvent(World world, int x, int y, int z, int type) {
+        Block block = world.getWorld().getBlockAt(x, y, z);
+        BlockState state = block.getState();
+        state.setTypeId(type);
+
         BlockGrowEvent event = new BlockGrowEvent(block);
         Bukkit.getPluginManager().callEvent(event);
-        return event;
+
+        if (!event.isCancelled()) {
+            state.update(true);
+        }
     }
 }
