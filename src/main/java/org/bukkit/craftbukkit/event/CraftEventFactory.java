@@ -444,7 +444,7 @@ public class CraftEventFactory {
         BlockState state = block.getState();
         state.setTypeId(type);
 
-        BlockGrowEvent event = new BlockGrowEvent(block);
+        BlockGrowEvent event = new BlockGrowEvent(block, state);
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
