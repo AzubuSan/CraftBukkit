@@ -472,7 +472,7 @@ public abstract class EntityHuman extends EntityLiving {
             f1 /= 5.0F;
         }
 
-        if (!this.onGround) {
+        if (!this.onGround && g_()) { // CraftBukkit - Don't reduce speed while they're flying
             f1 /= 5.0F;
         }
 
