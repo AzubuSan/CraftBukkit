@@ -12,7 +12,7 @@ public class CraftSmallFireball extends CraftFireball implements SmallFireball {
 
     @Override
     public EntitySmallFireball getHandle() {
-        return (EntitySmallFireball) entity;
+        return (EntitySmallFireball) super.getHandle();
     }
 
     @Override

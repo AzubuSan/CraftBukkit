@@ -12,7 +12,7 @@ public class CraftSnowball extends CraftProjectile implements Snowball {
 
     @Override
     public EntitySnowball getHandle() {
-        return (EntitySnowball) entity;
+        return (EntitySnowball) super.getHandle();
     }
 
     @Override

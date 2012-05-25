@@ -30,7 +30,7 @@ public class CraftPigZombie extends CraftZombie implements PigZombie {
 
     @Override
     public EntityPigZombie getHandle() {
-        return (EntityPigZombie) entity;
+        return (EntityPigZombie) super.getHandle();
     }
 
     @Override

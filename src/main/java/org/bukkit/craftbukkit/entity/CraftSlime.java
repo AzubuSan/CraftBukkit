@@ -22,7 +22,7 @@ public class CraftSlime extends CraftLivingEntity implements Slime {
 
     @Override
     public EntitySlime getHandle() {
-        return (EntitySlime) entity;
+        return (EntitySlime) super.getHandle();
     }
 
     @Override

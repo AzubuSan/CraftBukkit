@@ -12,7 +12,7 @@ public class CraftThrownExpBottle extends CraftProjectile implements ThrownExpBo
 
     @Override
     public EntityThrownExpBottle getHandle() {
-        return (EntityThrownExpBottle) entity;
+        return (EntityThrownExpBottle) super.getHandle();
     }
 
     @Override

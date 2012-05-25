@@ -14,7 +14,7 @@ public class CraftGhast extends CraftFlying implements Ghast {
 
     @Override
     public EntityGhast getHandle() {
-        return (EntityGhast) entity;
+        return (EntityGhast) super.getHandle();
     }
 
     @Override

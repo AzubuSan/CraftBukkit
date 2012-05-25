@@ -14,7 +14,7 @@ public class CraftZombie extends CraftMonster implements Zombie {
 
     @Override
     public EntityZombie getHandle() {
-        return (EntityZombie) entity;
+        return (EntityZombie) super.getHandle();
     }
 
     @Override

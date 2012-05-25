@@ -12,7 +12,7 @@ public class CraftAnimals extends CraftAgeable implements Animals {
 
     @Override
     public EntityAnimal getHandle() {
-        return (EntityAnimal) entity;
+        return (EntityAnimal) super.getHandle();
     }
 
     @Override

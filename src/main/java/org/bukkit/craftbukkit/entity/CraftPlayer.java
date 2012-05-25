@@ -591,7 +591,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         hiddenPlayers.put(player.getName(), player);
 
         //remove this player from the hidden player's EntityTrackerEntry
-        EntityTracker tracker = ((WorldServer) entity.world).tracker;
+        EntityTracker tracker = ((WorldServer) getHandle().world).tracker;
         EntityPlayer other = ((CraftPlayer) player).getHandle();
         EntityTrackerEntry entry = (EntityTrackerEntry) tracker.trackedEntities.get(other.id);
         if (entry != null) {
@@ -609,7 +609,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (!hiddenPlayers.containsKey(player.getName())) return;
         hiddenPlayers.remove(player.getName());
 
-        EntityTracker tracker = ((WorldServer) entity.world).tracker;
+        EntityTracker tracker = ((WorldServer) getHandle().world).tracker;
         EntityPlayer other = ((CraftPlayer) player).getHandle();
         EntityTrackerEntry entry = (EntityTrackerEntry) tracker.trackedEntities.get(other.id);
         if (entry != null && !entry.trackedPlayers.contains(getHandle())) {
@@ -637,7 +637,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public EntityPlayer getHandle() {
-        return (EntityPlayer) entity;
+        return (EntityPlayer) super.getHandle();
     }
 
     public void setHandle(final EntityPlayer entity) {

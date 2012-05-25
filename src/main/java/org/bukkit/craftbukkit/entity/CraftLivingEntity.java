@@ -56,8 +56,8 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
             throw new IllegalArgumentException("Health must be between 0 and " + getMaxHealth());
         }
 
-        if (entity instanceof EntityPlayer && health == 0) {
-            ((EntityPlayer) entity).die(DamageSource.GENERIC);
+        if (getHandle() instanceof EntityPlayer && health == 0) {
+            ((EntityPlayer) getHandle()).die(DamageSource.GENERIC);
         }
 
         getHandle().setHealth(health);
@@ -146,7 +146,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     }
 
     public void damage(int amount) {
-        entity.damageEntity(DamageSource.GENERIC, amount);
+        getHandle().damageEntity(DamageSource.GENERIC, amount);
     }
 
     public void damage(int amount, org.bukkit.entity.Entity source) {
@@ -158,7 +158,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
             reason = DamageSource.mobAttack(((CraftLivingEntity) source).getHandle());
         }
 
-        entity.damageEntity(reason, amount);
+        getHandle().damageEntity(reason, amount);
     }
 
     public Location getEyeLocation() {
@@ -193,7 +193,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public EntityLiving getHandle() {
-        return (EntityLiving) entity;
+        return (EntityLiving) super.getHandle();
     }
 
     public void setHandle(final EntityLiving entity) {

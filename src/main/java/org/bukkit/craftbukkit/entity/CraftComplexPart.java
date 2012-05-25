@@ -17,7 +17,7 @@ public class CraftComplexPart extends CraftEntity implements ComplexEntityPart {
 
     @Override
     public EntityComplexPart getHandle() {
-        return (EntityComplexPart) entity;
+        return (EntityComplexPart) super.getHandle();
     }
 
     @Override

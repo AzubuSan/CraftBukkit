@@ -40,7 +40,7 @@ public class CraftCreeper extends CraftMonster implements Creeper {
 
     @Override
     public EntityCreeper getHandle() {
-        return (EntityCreeper) entity;
+        return (EntityCreeper) super.getHandle();
     }
 
     @Override

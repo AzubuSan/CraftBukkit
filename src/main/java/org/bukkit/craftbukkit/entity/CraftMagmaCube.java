@@ -13,7 +13,7 @@ public class CraftMagmaCube extends CraftSlime implements MagmaCube {
     }
 
     public EntityMagmaCube getHandle() {
-        return (EntityMagmaCube) entity;
+        return (EntityMagmaCube) super.getHandle();
     }
 
     @Override

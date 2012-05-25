@@ -12,7 +12,7 @@ public class CraftEnderPearl extends CraftProjectile implements EnderPearl {
 
     @Override
     public EntityEnderPearl getHandle() {
-        return (EntityEnderPearl) entity;
+        return (EntityEnderPearl) super.getHandle();
     }
 
     @Override

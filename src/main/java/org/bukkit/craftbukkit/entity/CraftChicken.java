@@ -14,7 +14,7 @@ public class CraftChicken extends CraftAnimals implements Chicken {
 
     @Override
     public EntityChicken getHandle() {
-        return (EntityChicken) entity;
+        return (EntityChicken) super.getHandle();
     }
 
     @Override

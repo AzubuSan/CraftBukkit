@@ -14,7 +14,7 @@ public class CraftCow extends CraftAnimals implements Cow {
 
     @Override
     public EntityCow getHandle() {
-        return (EntityCow) entity;
+        return (EntityCow) super.getHandle();
     }
 
     @Override

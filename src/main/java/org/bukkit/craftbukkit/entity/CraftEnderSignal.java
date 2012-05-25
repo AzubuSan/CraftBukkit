@@ -12,7 +12,7 @@ public class CraftEnderSignal extends CraftEntity implements EnderSignal {
 
     @Override
     public EntityEnderSignal getHandle() {
-        return (EntityEnderSignal) entity;
+        return (EntityEnderSignal) super.getHandle();
     }
 
     @Override

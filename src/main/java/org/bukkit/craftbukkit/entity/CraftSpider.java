@@ -14,7 +14,7 @@ public class CraftSpider extends CraftMonster implements Spider {
 
     @Override
     public EntitySpider getHandle() {
-        return (EntitySpider) entity;
+        return (EntitySpider) super.getHandle();
     }
 
     @Override

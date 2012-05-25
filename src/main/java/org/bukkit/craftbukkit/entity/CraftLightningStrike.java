@@ -16,7 +16,7 @@ public class CraftLightningStrike extends CraftEntity implements LightningStrike
 
     @Override
     public EntityWeatherLighting getHandle() {
-        return (EntityWeatherLighting) entity;
+        return (EntityWeatherLighting) super.getHandle();
     }
 
     @Override

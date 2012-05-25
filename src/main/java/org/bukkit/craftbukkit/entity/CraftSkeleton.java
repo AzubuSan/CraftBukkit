@@ -14,7 +14,7 @@ public class CraftSkeleton extends CraftMonster implements Skeleton {
 
     @Override
     public EntitySkeleton getHandle() {
-        return (EntitySkeleton) entity;
+        return (EntitySkeleton) super.getHandle();
     }
 
     @Override

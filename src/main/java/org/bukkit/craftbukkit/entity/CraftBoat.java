@@ -49,7 +49,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
 
     @Override
     public EntityBoat getHandle() {
-        return (EntityBoat) entity;
+        return (EntityBoat) super.getHandle();
     }
 
     @Override

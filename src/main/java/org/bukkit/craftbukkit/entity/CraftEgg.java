@@ -12,7 +12,7 @@ public class CraftEgg extends CraftProjectile implements Egg {
 
     @Override
     public EntityEgg getHandle() {
-        return (EntityEgg) entity;
+        return (EntityEgg) super.getHandle();
     }
 
     @Override

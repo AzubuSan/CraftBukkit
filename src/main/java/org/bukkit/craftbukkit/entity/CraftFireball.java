@@ -40,7 +40,7 @@ public class CraftFireball extends AbstractProjectile implements Fireball {
 
     public void setShooter(LivingEntity shooter) {
         if (shooter instanceof CraftLivingEntity) {
-            getHandle().shooter = (EntityLiving) ((CraftLivingEntity) shooter).entity;
+            getHandle().shooter = (EntityLiving) ((CraftLivingEntity) shooter).getHandle();
         }
     }
 
@@ -54,7 +54,7 @@ public class CraftFireball extends AbstractProjectile implements Fireball {
 
     @Override
     public EntityFireball getHandle() {
-        return (EntityFireball) entity;
+        return (EntityFireball) super.getHandle();
     }
 
     @Override

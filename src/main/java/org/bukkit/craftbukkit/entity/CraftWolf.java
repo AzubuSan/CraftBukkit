@@ -20,7 +20,7 @@ public class CraftWolf extends CraftTameableAnimal implements Wolf {
 
     @Override
     public EntityWolf getHandle() {
-        return (EntityWolf) entity;
+        return (EntityWolf) super.getHandle();
     }
 
     @Override

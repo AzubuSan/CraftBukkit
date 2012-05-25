@@ -13,7 +13,7 @@ public class CraftOcelot extends CraftTameableAnimal implements Ocelot {
 
     @Override
     public EntityOcelot getHandle() {
-        return (EntityOcelot) entity;
+        return (EntityOcelot) super.getHandle();
     }
 
     public Type getCatType() {

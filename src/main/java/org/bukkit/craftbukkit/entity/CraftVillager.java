@@ -13,7 +13,7 @@ public class CraftVillager extends CraftAgeable implements Villager {
 
     @Override
     public EntityVillager getHandle() {
-        return (EntityVillager) entity;
+        return (EntityVillager) super.getHandle();
     }
 
     @Override

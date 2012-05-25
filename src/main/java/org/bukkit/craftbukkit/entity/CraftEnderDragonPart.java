@@ -17,7 +17,7 @@ public class CraftEnderDragonPart extends CraftComplexPart implements EnderDrago
 
     @Override
     public EntityComplexPart getHandle() {
-        return (EntityComplexPart) entity;
+        return (EntityComplexPart) super.getHandle();
     }
 
     @Override

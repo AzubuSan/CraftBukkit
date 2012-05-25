@@ -21,13 +21,13 @@ public abstract class CraftProjectile extends AbstractProjectile implements Proj
 
     public void setShooter(LivingEntity shooter) {
         if (shooter instanceof CraftLivingEntity) {
-            getHandle().shooter = (EntityLiving) ((CraftLivingEntity) shooter).entity;
+            getHandle().shooter = (EntityLiving) ((CraftLivingEntity) shooter).getHandle();
         }
     }
 
     @Override
     public EntityProjectile getHandle() {
-        return (EntityProjectile) entity;
+        return (EntityProjectile) super.getHandle();
     }
 
     @Override

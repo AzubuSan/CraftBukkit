@@ -153,7 +153,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     @Override
     public EntityHuman getHandle() {
-        return (EntityHuman) entity;
+        return (EntityHuman) super.getHandle();
     }
 
     public void setHandle(final EntityHuman entity) {

@@ -13,7 +13,7 @@ public class CraftBlaze extends CraftMonster implements Blaze {
 
     @Override
     public EntityBlaze getHandle() {
-        return (EntityBlaze) entity;
+        return (EntityBlaze) super.getHandle();
     }
 
     @Override

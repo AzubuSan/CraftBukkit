@@ -29,7 +29,7 @@ public class CraftArrow extends AbstractProjectile implements Arrow {
 
     @Override
     public EntityArrow getHandle() {
-        return (EntityArrow) entity;
+        return (EntityArrow) super.getHandle();
     }
 
     @Override

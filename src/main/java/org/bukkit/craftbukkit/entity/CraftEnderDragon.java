@@ -30,7 +30,7 @@ public class CraftEnderDragon extends CraftComplexLivingEntity implements EnderD
 
     @Override
     public EntityEnderDragon getHandle() {
-        return (EntityEnderDragon) entity;
+        return (EntityEnderDragon) super.getHandle();
     }
 
     @Override

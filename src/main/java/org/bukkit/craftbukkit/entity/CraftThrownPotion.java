@@ -28,7 +28,7 @@ public class CraftThrownPotion extends CraftProjectile implements ThrownPotion {
 
     @Override
     public EntityPotion getHandle() {
-        return (EntityPotion) entity;
+        return (EntityPotion) super.getHandle();
     }
 
     @Override

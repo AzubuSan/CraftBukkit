@@ -75,7 +75,7 @@ public class CraftMinecart extends CraftVehicle implements Minecart {
 
     @Override
     public EntityMinecart getHandle() {
-        return (EntityMinecart) entity;
+        return (EntityMinecart) super.getHandle();
     }
 
     @Override

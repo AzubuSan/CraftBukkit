@@ -15,7 +15,7 @@ public class CraftFallingSand extends CraftEntity implements FallingSand {
 
     @Override
     public EntityFallingBlock getHandle() {
-        return (EntityFallingBlock) entity;
+        return (EntityFallingBlock) super.getHandle();
     }
 
     @Override

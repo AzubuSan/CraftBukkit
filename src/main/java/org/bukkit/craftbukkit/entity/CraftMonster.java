@@ -13,7 +13,7 @@ public class CraftMonster extends CraftCreature implements Monster {
 
     @Override
     public EntityMonster getHandle() {
-        return (EntityMonster) entity;
+        return (EntityMonster) super.getHandle();
     }
 
     @Override

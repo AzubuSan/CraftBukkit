@@ -31,7 +31,7 @@ public class CraftCreature extends CraftLivingEntity implements Creature {
 
     @Override
     public EntityCreature getHandle() {
-        return (EntityCreature) entity;
+        return (EntityCreature) super.getHandle();
     }
 
     @Override

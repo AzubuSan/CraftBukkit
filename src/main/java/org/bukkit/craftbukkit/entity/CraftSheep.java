@@ -30,7 +30,7 @@ public class CraftSheep extends CraftAnimals implements Sheep {
 
     @Override
     public EntitySheep getHandle() {
-        return (EntitySheep) entity;
+        return (EntitySheep) super.getHandle();
     }
 
     @Override

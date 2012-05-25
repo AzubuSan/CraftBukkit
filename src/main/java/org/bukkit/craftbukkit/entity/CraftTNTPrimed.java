@@ -38,7 +38,7 @@ public class CraftTNTPrimed extends CraftEntity implements TNTPrimed {
 
     @Override
     public EntityTNTPrimed getHandle() {
-        return (EntityTNTPrimed) entity;
+        return (EntityTNTPrimed) super.getHandle();
     }
 
     @Override

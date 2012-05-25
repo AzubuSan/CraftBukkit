@@ -12,7 +12,7 @@ public class CraftEnderCrystal extends CraftEntity implements EnderCrystal {
 
     @Override
     public EntityEnderCrystal getHandle() {
-        return (EntityEnderCrystal) entity;
+        return (EntityEnderCrystal) super.getHandle();
     }
 
     @Override

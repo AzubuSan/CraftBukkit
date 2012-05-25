@@ -20,7 +20,7 @@ public class CraftPig extends CraftAnimals implements Pig {
     }
 
     public EntityPig getHandle() {
-        return (EntityPig) entity;
+        return (EntityPig) super.getHandle();
     }
 
     @Override

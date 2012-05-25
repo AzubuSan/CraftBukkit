@@ -23,13 +23,13 @@ public class CraftFish extends AbstractProjectile implements Fish {
 
     public void setShooter(LivingEntity shooter) {
         if (shooter instanceof CraftHumanEntity) {
-            getHandle().owner = (EntityHuman) ((CraftHumanEntity) shooter).entity;
+            getHandle().owner = (EntityHuman) ((CraftHumanEntity) shooter).getHandle();
         }
     }
 
     @Override
     public EntityFishingHook getHandle() {
-        return (EntityFishingHook) entity;
+        return (EntityFishingHook) super.getHandle();
     }
 
     @Override

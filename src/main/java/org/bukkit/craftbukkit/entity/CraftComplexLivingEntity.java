@@ -14,7 +14,7 @@ public abstract class CraftComplexLivingEntity extends CraftLivingEntity impleme
 
     @Override
     public EntityComplex getHandle() {
-        return (EntityComplex) entity;
+        return (EntityComplex) super.getHandle();
     }
 
     @Override
@@ -32,10 +32,10 @@ public abstract class CraftComplexLivingEntity extends CraftLivingEntity impleme
             reason = DamageSource.mobAttack(((CraftLivingEntity) source).getHandle());
         }
 
-        if (entity instanceof EntityComplex) {
-            ((EntityComplex) entity).dealDamage(reason, amount);
+        if (getHandle() instanceof EntityComplex) {
+            getHandle().dealDamage(reason, amount);
         } else {
-            entity.damageEntity(reason, amount);
+            getHandle().damageEntity(reason, amount);
         }
     }
 }

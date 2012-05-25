@@ -111,12 +111,12 @@ public class CraftPainting extends CraftEntity implements Painting {
         getHandle().die();
         getHandle().velocityChanged = true; // because this occurs when the painting is broken, so it might be important
         world.addEntity(painting);
-        this.entity = painting;
+        this.setHandle(painting);
     }
 
     @Override
     public EntityPainting getHandle() {
-        return (EntityPainting) entity;
+        return (EntityPainting) super.getHandle();
     }
 
     @Override

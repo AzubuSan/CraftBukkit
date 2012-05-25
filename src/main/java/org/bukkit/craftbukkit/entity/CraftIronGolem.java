@@ -12,7 +12,7 @@ public class CraftIronGolem extends CraftGolem implements IronGolem {
 
     @Override
     public EntityIronGolem getHandle() {
-        return (EntityIronGolem) entity;
+        return (EntityIronGolem) super.getHandle();
     }
 
     @Override

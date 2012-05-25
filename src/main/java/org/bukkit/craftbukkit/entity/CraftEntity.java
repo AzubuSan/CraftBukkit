@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,12 +20,12 @@ import org.bukkit.util.Vector;
 
 public abstract class CraftEntity implements org.bukkit.entity.Entity {
     protected final CraftServer server;
-    protected Entity entity;
+    protected WeakReference<Entity> entity;
     private EntityDamageEvent lastDamageEvent;
 
     public CraftEntity(final CraftServer server, final Entity entity) {
         this.server = server;
-        this.entity = entity;
+        this.setHandle(entity);
     }
 
     public static CraftEntity getEntity(CraftServer server, Entity entity) {
@@ -140,22 +141,22 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     }
 
     public Location getLocation() {
-        return new Location(getWorld(), entity.locX, entity.locY, entity.locZ, entity.yaw, entity.pitch);
+        return new Location(getWorld(), getHandle().locX, getHandle().locY, getHandle().locZ, getHandle().yaw, getHandle().pitch);
     }
 
     public Vector getVelocity() {
-        return new Vector(entity.motX, entity.motY, entity.motZ);
+        return new Vector(getHandle().motX, getHandle().motY, getHandle().motZ);
     }
 
     public void setVelocity(Vector vel) {
-        entity.motX = vel.getX();
-        entity.motY = vel.getY();
-        entity.motZ = vel.getZ();
-        entity.velocityChanged = true;
+        getHandle().motX = vel.getX();
+        getHandle().motY = vel.getY();
+        getHandle().motZ = vel.getZ();
+        getHandle().velocityChanged = true;
     }
 
     public World getWorld() {
-        return ((WorldServer) entity.world).getWorld();
+        return ((WorldServer) getHandle().world).getWorld();
     }
 
     public boolean teleport(Location location) {
@@ -163,8 +164,8 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     }
 
     public boolean teleport(Location location, TeleportCause cause) {
-        entity.world = ((CraftWorld) location.getWorld()).getHandle();
-        entity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        getHandle().world = ((CraftWorld) location.getWorld()).getHandle();
+        getHandle().setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         // entity.setLocation() throws no event, and so cannot be cancelled
         return true;
     }
@@ -179,7 +180,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
     public List<org.bukkit.entity.Entity> getNearbyEntities(double x, double y, double z) {
         @SuppressWarnings("unchecked")
-        List<Entity> notchEntityList = entity.world.getEntities(entity, entity.boundingBox.grow(x, y, z));
+        List<Entity> notchEntityList = getHandle().world.getEntities(getHandle(), getHandle().boundingBox.grow(x, y, z));
         List<org.bukkit.entity.Entity> bukkitEntityList = new java.util.ArrayList<org.bukkit.entity.Entity>(notchEntityList.size());
 
         for (Entity e : notchEntityList) {
@@ -189,27 +190,27 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     }
 
     public int getEntityId() {
-        return entity.id;
+        return getHandle().id;
     }
 
     public int getFireTicks() {
-        return entity.fireTicks;
+        return getHandle().fireTicks;
     }
 
     public int getMaxFireTicks() {
-        return entity.maxFireTicks;
+        return getHandle().maxFireTicks;
     }
 
     public void setFireTicks(int ticks) {
-        entity.fireTicks = ticks;
+        getHandle().fireTicks = ticks;
     }
 
     public void remove() {
-        entity.dead = true;
+        getHandle().dead = true;
     }
 
     public boolean isDead() {
-        return !entity.isAlive();
+        return !getHandle().isAlive();
     }
 
     public Server getServer() {
@@ -282,7 +283,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     }
 
     public Entity getHandle() {
-        return entity;
+        return entity.get();
     }
 
     public void playEffect(EntityEffect type) {
@@ -290,7 +291,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     }
 
     public void setHandle(final Entity entity) {
-        this.entity = entity;
+        this.entity = new WeakReference(entity);
     }
 
     @Override

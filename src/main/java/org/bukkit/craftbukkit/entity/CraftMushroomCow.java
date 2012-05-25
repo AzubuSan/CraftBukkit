@@ -13,7 +13,7 @@ public class CraftMushroomCow extends CraftCow implements MushroomCow {
 
     @Override
     public EntityMushroomCow getHandle() {
-        return (EntityMushroomCow) entity;
+        return (EntityMushroomCow) super.getHandle();
     }
 
     @Override

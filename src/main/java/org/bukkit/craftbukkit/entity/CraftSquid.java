@@ -14,7 +14,7 @@ public class CraftSquid extends CraftWaterMob implements Squid {
 
     @Override
     public EntitySquid getHandle() {
-        return (EntitySquid) entity;
+        return (EntitySquid) super.getHandle();
     }
 
     @Override
