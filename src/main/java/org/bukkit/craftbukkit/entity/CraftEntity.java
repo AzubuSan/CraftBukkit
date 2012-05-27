@@ -12,6 +12,7 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.metadata.MetadataValue;
@@ -283,7 +284,13 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     }
 
     public Entity getHandle() {
-        return entity.get();
+        Entity handle = entity.get();
+
+        if (handle == null) {
+            throw new IllegalStateException("Entity{type=" + this.getType() + "} does not exist.");
+        }
+
+        return handle;
     }
 
     public void playEffect(EntityEffect type) {

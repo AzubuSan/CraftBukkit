@@ -52,6 +52,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     private long lastPlayed = 0;
     private boolean hasPlayedBefore = false;
     private ConversationTracker conversationTracker = new ConversationTracker();
+    private final String name;
     private Set<String> channels = new HashSet<String>();
     private Map<String, Player> hiddenPlayers = new MapMaker().softValues().makeMap();
     private int hash = 0;
@@ -59,6 +60,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public CraftPlayer(CraftServer server, EntityPlayer entity) {
         super(server, entity);
 
+        name = entity.name;
         firstPlayed = System.currentTimeMillis();
     }
 
@@ -637,7 +639,20 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public EntityPlayer getHandle() {
-        return (EntityPlayer) super.getHandle();
+        Entity handle = entity.get();
+
+        if (handle == null) {
+            CraftPlayer player = (CraftPlayer) this.server.getPlayerExact(name);
+
+            if (player == null) {
+                throw new IllegalStateException("CraftPlayer{name=" + name + "} does not exist");
+            }
+
+            handle = player.getHandle();
+            this.setHandle(handle);
+        }
+
+        return (EntityPlayer) handle;
     }
 
     public void setHandle(final EntityPlayer entity) {
