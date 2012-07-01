@@ -1,8 +1,6 @@
 package org.bukkit.craftbukkit.inventory;
 
-import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.server.EnchantmentManager;
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 import org.bukkit.enchantments.Enchantment;
@@ -12,15 +10,17 @@ import org.bukkit.configuration.serialization.DelegateDeserialization;
 
 @DelegateDeserialization(ItemStack.class)
 public class CraftItemStack extends ItemStack {
-    protected net.minecraft.server.ItemStack item;
+    private net.minecraft.server.ItemStack item;
+    private boolean processedEnchantments = true;
 
     public CraftItemStack(net.minecraft.server.ItemStack item) {
         super(
             item != null ? item.id: 0,
             item != null ? item.count : 0,
-            (short)(item != null ? item.getData() : 0)
+            (short) (item != null ? item.getData() : 0)
         );
         this.item = item;
+        this.getNMSEnchantments();
     }
 
     public CraftItemStack(ItemStack item) {
@@ -61,132 +61,69 @@ public class CraftItemStack extends ItemStack {
         this(new net.minecraft.server.ItemStack(type, amount, data != null ? data : damage));
     }
 
-    /*
-     * Unsure if we have to sync before each of these calls the values in 'item'
-     * are all public.
-     */
-
-    @Override
-    public Material getType() {
-        super.setTypeId(item != null ? item.id : 0); // sync, needed?
-        return super.getType();
-    }
-
-    @Override
-    public int getTypeId() {
-        super.setTypeId(item != null ? item.id : 0); // sync, needed?
-        return item != null ? item.id : 0;
-    }
-
     @Override
     public void setTypeId(int type) {
-        if (type == 0) {
-            super.setTypeId(0);
-            super.setAmount(0);
+        if (type <= 0) {
             item = null;
         } else {
             if (item == null) {
                 item = new net.minecraft.server.ItemStack(type, 1, 0);
-                super.setTypeId(type);
                 super.setAmount(1);
                 super.setDurability((short) 0);
             } else {
                 item.id = type;
-                super.setTypeId(item.id);
             }
         }
-    }
-
-    @Override
-    public int getAmount() {
-        super.setAmount(item != null ? item.count : 0); // sync, needed?
-        return (item != null ? item.count : 0);
+        super.setTypeId(type);
     }
 
     @Override
     public void setAmount(int amount) {
-        if (amount == 0) {
-            super.setTypeId(0);
-            super.setAmount(0);
-            item = null;
-        } else {
-            super.setAmount(amount);
+        if (item != null) {
             item.count = amount;
         }
+        super.setAmount(amount);
     }
 
     @Override
     public void setDurability(final short durability) {
-        // Ignore damage if item is null
         if (item != null) {
-            super.setDurability(durability);
             item.setData(durability);
         }
-    }
-
-    @Override
-    public short getDurability() {
-        if (item != null) {
-            super.setDurability((short) item.getData()); // sync, needed?
-            return (short) item.getData();
-        } else {
-            return -1;
-        }
+        super.setDurability(durability);
     }
 
     @Override
     public int getMaxStackSize() {
-        return (item == null) ? 0 : item.getItem().getMaxStackSize();
+        return item == null ? 0 : item.getItem().getMaxStackSize();
     }
 
     @Override
     public void addUnsafeEnchantment(Enchantment ench, int level) {
-        Map<Enchantment, Integer> enchantments = getEnchantments();
-        enchantments.put(ench, level);
-        rebuildEnchantments(enchantments);
-    }
-
-    @Override
-    public boolean containsEnchantment(Enchantment ench) {
-        return getEnchantmentLevel(ench) > 0;
-    }
-
-    @Override
-    public int getEnchantmentLevel(Enchantment ench) {
-        if (item == null) return 0;
-        return EnchantmentManager.getEnchantmentLevel(ench.getId(), item);
+        super.addUnsafeEnchantment(ench, level);
+        this.processedEnchantments = false;
     }
 
     @Override
     public int removeEnchantment(Enchantment ench) {
-        Map<Enchantment, Integer> enchantments = getEnchantments();
-        Integer previous = enchantments.remove(ench);
-
-        rebuildEnchantments(enchantments);
-
-        return (previous == null) ? 0 : previous;
+        this.processedEnchantments = false;
+        return super.removeEnchantment(ench);
     }
 
-    @Override
-    public Map<Enchantment, Integer> getEnchantments() {
-        Map<Enchantment, Integer> result = new HashMap<Enchantment, Integer>();
+    private void getNMSEnchantments() {
         NBTTagList list = (item == null) ? null : item.getEnchantments();
 
-        if (list == null) {
-            return result;
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                short id = ((NBTTagCompound) list.get(i)).getShort("id");
+                short level = ((NBTTagCompound) list.get(i)).getShort("lvl");
+
+                enchantments.put(Enchantment.getById(id), (int) level);
+            }
         }
-
-        for (int i = 0; i < list.size(); i++) {
-            short id = ((NBTTagCompound) list.get(i)).getShort("id");
-            short level = ((NBTTagCompound) list.get(i)).getShort("lvl");
-
-            result.put(Enchantment.getById(id), (int) level);
-        }
-
-        return result;
     }
 
-    private void rebuildEnchantments(Map<Enchantment, Integer> enchantments) {
+    private void rebuildEnchantments() {
         if (item == null) return;
 
         NBTTagCompound tag = item.tag;
@@ -210,9 +147,14 @@ public class CraftItemStack extends ItemStack {
         } else {
             tag.set("ench", list);
         }
+
+        processedEnchantments = true;
     }
 
     public net.minecraft.server.ItemStack getHandle() {
+        if (!this.processedEnchantments) {
+            this.rebuildEnchantments();
+        }
         return item;
     }
 
@@ -228,7 +170,10 @@ public class CraftItemStack extends ItemStack {
     public static net.minecraft.server.ItemStack createNMSItemStack(ItemStack original) {
         if (original == null || original.getTypeId() <= 0) {
             return null;
+        } else if (original instanceof CraftItemStack) {
+            return ((CraftItemStack) original).getHandle();
+        } else {
+            return new CraftItemStack(original).getHandle();
         }
-        return new CraftItemStack(original).getHandle();
     }
 }
