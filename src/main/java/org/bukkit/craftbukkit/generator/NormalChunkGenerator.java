@@ -15,7 +15,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.generator.BlockPopulator;
 
 public class NormalChunkGenerator extends InternalChunkGenerator {
-    private final IChunkProvider provider;
+    public final IChunkProvider provider;
 
     public NormalChunkGenerator(World world, long seed) {
         provider = world.worldProvider.getChunkProvider();

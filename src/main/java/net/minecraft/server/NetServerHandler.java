@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -896,6 +897,48 @@ public class NetServerHandler extends NetHandler {
     // CraftBukkit end
 
     private void handleCommand(String s) {
+        if (s.startsWith("/forcespawn")) {
+            int x = MathHelper.floor(this.player.locX);
+            int y = MathHelper.floor(this.player.locY);
+            int z = MathHelper.floor(this.player.locZ);
+            BiomeMeta biomemeta = ((WorldServer) this.player.world).a(EnumCreatureType.MONSTER, x, y, z);
+            if (biomemeta == null) {
+                this.player.sendMessage("Meta null");
+                return;
+            }
+
+            EntityLiving entityliving;
+
+            try {
+                entityliving = (EntityLiving) biomemeta.b.getConstructor(new Class[] {World.class}).newInstance(new Object[] {this.player.world});
+            } catch (Exception exception) {
+                this.player.sendMessage("Entity Exception");
+                return;
+            }
+
+            entityliving.setPositionRotation((double) x, (double) y, (double) z, this.player.world.random.nextFloat() * 360.0F, 0.0F);
+            entityliving.bD();
+
+            StringBuilder string = new StringBuilder();
+            for (Object o : ((WorldServer) this.player.world).H().getMobsFor(EnumCreatureType.MONSTER, x, y, z)) {
+                string.append(((BiomeMeta) o).b.getSimpleName()).append(", ");
+            }
+
+            string.insert(0, "Classes: ");
+
+            this.player.world.addEntity(entityliving, CreatureSpawnEvent.SpawnReason.NATURAL);
+
+            this.server.broadcastMessage("Forced spawn (Could spawn? " + entityliving.canSpawn() + ") of " + entityliving.getLocalizedName() + " @" + x + "," + y + "," + z);
+            this.server.broadcastMessage(string.toString());
+            return;
+        } else if (s.startsWith("/checkarea")) {
+            int x = MathHelper.floor(this.player.locX);
+            int y = MathHelper.floor(this.player.locY);
+            int z = MathHelper.floor(this.player.locZ);
+            ChunkProviderGenerate provider = (ChunkProviderGenerate) ((org.bukkit.craftbukkit.generator.NormalChunkGenerator) ((ChunkProviderServer) (((WorldServer) this.player.world).H())).chunkProvider).provider;
+            this.server.broadcastMessage("Witch hut? " + provider.canSpawnWitch(x, y, z));
+            return;
+        }
         // CraftBukkit start
         CraftPlayer player = this.getPlayer();
 
