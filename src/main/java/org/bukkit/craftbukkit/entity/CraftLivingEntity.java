@@ -278,20 +278,18 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
         } else if (Arrow.class.isAssignableFrom(projectile)) {
             launch = new EntityArrow(world, getHandle(), 1);
         } else if (Fireball.class.isAssignableFrom(projectile)) {
+            Location location = getEyeLocation();
+            Vector direction = location.getDirection().multiply(10);
+
             if (WitherSkull.class.isAssignableFrom(projectile)) {
-                launch = new EntityWitherSkull(world);
+                launch = new EntityWitherSkull(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
             } else if (SmallFireball.class.isAssignableFrom(projectile)) {
-                launch = new EntitySmallFireball(world);
+                launch = new EntitySmallFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
             } else {
-                launch = new EntityLargeFireball(world);
+                launch = new EntityLargeFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
             }
 
-            Location location = getEyeLocation();
-            location.add(location.getDirection().normalize());
             launch.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-
-            Vector direction = location.getDirection().multiply(10);
-            ((EntityFireball) launch).setDirection(direction.getX(), direction.getY(), direction.getZ());
         }
 
         Validate.notNull(launch, "Projectile not supported");
