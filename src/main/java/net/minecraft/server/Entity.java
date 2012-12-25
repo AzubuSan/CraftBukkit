@@ -30,7 +30,7 @@ import org.bukkit.plugin.PluginManager;
 public abstract class Entity {
 
     // CraftBukkit start
-    private static final int CURRENT_LEVEL = 1;
+    private static final int CURRENT_LEVEL = 2;
     static boolean isLevelAtLeast(NBTTagCompound tag, int level) {
         return tag.hasKey("Bukkit.updateLevel") && tag.getInt("Bukkit.updateLevel") >= level;
     }

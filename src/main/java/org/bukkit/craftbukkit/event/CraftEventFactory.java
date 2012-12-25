@@ -232,12 +232,22 @@ public class CraftEventFactory {
      * EntityTameEvent
      */
     public static EntityTameEvent callEntityTameEvent(EntityLiving entity, EntityHuman tamer) {
-        org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
+        CraftLivingEntity bukkitEntity = (CraftLivingEntity) entity.getBukkitEntity();
         org.bukkit.entity.AnimalTamer bukkitTamer = (tamer != null ? (AnimalTamer) tamer.getBukkitEntity() : null);
         CraftServer craftServer = (CraftServer) bukkitEntity.getServer();
 
+        int modification = bukkitEntity.getPersistMod();
+        boolean persistence = entity.persistent;
+        entity.persistent = true;
+
         EntityTameEvent event = new EntityTameEvent((LivingEntity) bukkitEntity, bukkitTamer);
         craftServer.getPluginManager().callEvent(event);
+
+        // Reset persistence if it hasn't been changed during the event
+        if (event.isCancelled() && modification == bukkitEntity.getPersistMod()) {
+            entity.persistent = persistence;
+        }
+
         return event;
     }
 

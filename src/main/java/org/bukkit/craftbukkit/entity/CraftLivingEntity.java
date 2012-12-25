@@ -49,6 +49,7 @@ import org.bukkit.util.Vector;
 
 public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     private CraftEntityEquipment equipment;
+    private int persist_mod;
 
     public CraftLivingEntity(final CraftServer server, final EntityLiving entity) {
         super(server, entity);
@@ -332,6 +333,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     }
 
     public void setRemoveWhenFarAway(boolean remove) {
+        persist_mod++;
         getHandle().persistent = !remove;
     }
 
@@ -345,5 +347,9 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     public boolean getCanPickupItems() {
         return getHandle().canPickUpLoot;
+    }
+
+    public int getPersistMod() {
+        return persist_mod;
     }
 }

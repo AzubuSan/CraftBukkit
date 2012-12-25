@@ -69,6 +69,11 @@ public class EntityOcelot extends EntityTameableAnimal {
 
     public void a(NBTTagCompound nbttagcompound) {
         super.a(nbttagcompound);
+        // CraftBukkit start - force persistence on previously tamed ocelots
+        if (this.isTamed() && !isLevelAtLeast(nbttagcompound, 2)) {
+            this.persistent = true;
+        }
+        // CraftBukkit end
         this.setCatType(nbttagcompound.getInt("CatType"));
     }
 

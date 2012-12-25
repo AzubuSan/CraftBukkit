@@ -69,6 +69,11 @@ public class EntityWolf extends EntityTameableAnimal {
 
     public void a(NBTTagCompound nbttagcompound) {
         super.a(nbttagcompound);
+        // CraftBukkit start - force persistence on previously tamed wolves
+        if (this.isTamed() && !isLevelAtLeast(nbttagcompound, 2)) {
+            this.persistent = true;
+        }
+        // CraftBukkit end
         this.setAngry(nbttagcompound.getBoolean("Angry"));
         if (nbttagcompound.hasKey("CollarColor")) {
             this.setCollarColor(nbttagcompound.getByte("CollarColor"));
